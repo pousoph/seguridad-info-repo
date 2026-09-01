@@ -1,60 +1,430 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/*
+ * estilo.css
+ * Taller de Cifrado Clásico - Seguridad de la Información 2026-II
+ *
+ * El color no decora: identifica el cifrado. --activo cambia según lo
+ * que diagnostique el análisis y se propaga por toda la página.
+ * La monoespaciada se reserva para el contenido criptográfico; la prosa
+ * va en sans, que es lo que se lee sin cansarse.
+ */
+
+ :root {
+  --fondo:   #16142C;
+  --panel:   #1E1B3B;
+  --hondo:   #100E22;
+  --borde:   #322D5C;
+  --texto:   #F2F0FC;
+  --tenue:   #B3ADD8;
+  --alerta:  #FF7A93;
+
+  --cesar:    #FF7FBB;
+  --afin:     #6FE8CD;
+  --vigenere: #FFD05E;
+  --neutro:   #A79AFF;
+
+  --activo: var(--neutro);
+
+  --display: "Bricolage Grotesque", "IBM Plex Sans", system-ui, sans-serif;
+  --sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --medida: 64ch;
 }
+
+body[data-cifrado="cesar"]    { --activo: var(--cesar); }
+body[data-cifrado="afin"]     { --activo: var(--afin); }
+body[data-cifrado="vigenere"] { --activo: var(--vigenere); }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
-  line-height: 1.6;
-  color: #222;
-  background: #f5f5f5;
+  margin: 0;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1.65;
+  /* Halo muy leve del color activo: se nota el cambio de diagnóstico
+     sin que el fondo compita con el texto. */
+  background-image: radial-gradient(1000px 560px at 84% -10%,
+                    color-mix(in oklab, var(--activo) 11%, transparent), transparent 72%);
+  background-attachment: fixed;
+  transition: background-image .5s ease;
+  -webkit-font-smoothing: antialiased;
 }
 
-header {
-  background: #1f3a5f;
-  color: #fff;
-  padding: 20px;
+::selection { background: var(--activo); color: var(--hondo); }
+
+/* ---------- Estructura ---------- */
+
+.marco { max-width: 1120px; margin: 0 auto; padding: 0 28px 120px; }
+
+.encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 28px 0;
 }
 
-header h1 {
-  margin-bottom: 10px;
+.sello {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.8125rem;
+  color: var(--tenue);
 }
 
-nav a {
-  color: #fff;
-  margin-right: 15px;
+.sello .punto {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--activo);
+  box-shadow: 0 0 14px color-mix(in oklab, var(--activo) 70%, transparent);
+  transition: background .4s ease, box-shadow .4s ease;
+  flex: 0 0 auto;
+}
+
+.navegacion { display: flex; gap: 6px; }
+
+.navegacion a {
+  color: var(--tenue);
   text-decoration: none;
+  font-size: 0.875rem;
+  padding: 8px 18px;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
 }
 
-nav a:hover {
-  text-decoration: underline;
+.navegacion a:hover { color: var(--texto); border-color: var(--activo); }
+
+.navegacion a[aria-current="page"] {
+  color: var(--hondo);
+  background: var(--activo);
+  border-color: var(--activo);
+  font-weight: 600;
 }
 
-main {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
+/* ---------- Portada ---------- */
+
+.portada {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 56px;
+  align-items: center;
+  padding: 32px 0 76px;
 }
 
-section {
-  background: #fff;
-  padding: 20px;
-  margin-bottom: 20px;
+.portada h1 {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(2.5rem, 6.4vw, 4.5rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin: 0 0 22px;
+}
+
+.portada .entrada-texto {
+  max-width: var(--medida);
+  color: var(--tenue);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.portada .entrada-texto strong { color: var(--texto); font-weight: 500; }
+
+/* ---------- Portada: tabla de frecuencias de referencia ---------- */
+
+.referencia { display: flex; flex-direction: column; gap: 12px; width: 420px; max-width: 100%; }
+
+.referencia-pie {
+  font-size: 0.8125rem;
+  color: var(--tenue);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ---------- Secciones ---------- */
+
+.bloque { margin-bottom: 68px; }
+
+.bloque > h2 {
+  font-family: var(--display);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0 0 10px;
+}
+
+.bloque > .guia {
+  max-width: var(--medida);
+  color: var(--tenue);
+  font-size: 1rem;
+  margin: 0 0 26px;
+}
+
+/* ---------- Controles ---------- */
+
+label {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--tenue);
+  margin-bottom: 8px;
+}
+
+textarea, input[type="text"], input[type="number"], select {
+  width: 100%;
+  background: var(--hondo);
+  color: var(--texto);
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-family: var(--mono);
+  font-size: 0.9375rem;
+  line-height: 1.8;
+}
+
+select { font-family: var(--sans); }
+
+textarea { min-height: 160px; resize: vertical; letter-spacing: 0.02em; }
+
+textarea:focus, input:focus, select:focus {
+  outline: none;
+  border-color: var(--activo);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--activo) 20%, transparent);
+}
+
+button:focus-visible { outline: 2px solid var(--activo); outline-offset: 3px; }
+
+.fila { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px; margin-top: 20px; }
+.fila > * { flex: 0 0 auto; }
+.campo-corto { width: 150px; }
+.campo-medio { width: 230px; }
+
+button {
+  font-family: var(--sans);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--hondo);
+  background: var(--activo);
+  border: 1px solid var(--activo);
+  border-radius: 999px;
+  padding: 12px 26px;
+  cursor: pointer;
+  transition: filter .18s ease;
+}
+
+button:hover { filter: brightness(1.1); }
+
+button.secundario {
+  color: var(--tenue);
+  background: transparent;
+  border-color: var(--borde);
+}
+
+button.secundario:hover { color: var(--texto); border-color: var(--activo); filter: none; }
+
+.estado-entrada {
+  margin-top: 10px;
+  font-size: 0.8125rem;
+  color: var(--tenue);
+  min-height: 1.4em;
+}
+
+/* ---------- Diagnóstico ---------- */
+
+.diagnostico {
+  display: grid;
+  grid-template-columns: minmax(200px, 260px) 1fr;
+  gap: 40px;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  padding: 32px;
+  background: var(--panel);
+}
+
+.diagnostico.revelado { animation: destello .55s ease-out; }
+
+@keyframes destello {
+  from { background: color-mix(in oklab, var(--activo) 22%, var(--panel)); }
+  to   { background: var(--panel); }
+}
+
+.medidor .valor {
+  font-family: var(--display);
+  font-size: 3.75rem;
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  color: var(--activo);
+}
+
+.medidor .rotulo { font-size: 0.8125rem; color: var(--tenue); margin-top: 14px; line-height: 1.75; }
+
+.veredicto h3 {
+  font-family: var(--display);
+  margin: 0 0 14px;
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.veredicto p { margin: 0 0 14px; max-width: var(--medida); font-size: 1rem; color: var(--tenue); }
+.veredicto p:last-child { margin-bottom: 0; }
+
+.aviso {
+  color: var(--alerta);
+  font-size: 0.9375rem;
+  background: color-mix(in oklab, var(--alerta) 12%, transparent);
   border-radius: 6px;
+  padding: 12px 16px;
 }
 
-section h2 {
-  margin-bottom: 10px;
+/* ---------- Histograma ---------- */
+
+.histograma {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 210px;
+  border-bottom: 1px solid var(--borde);
+  overflow-x: auto;
 }
 
-ul {
-  padding-left: 20px;
+.barra-grupo {
+  flex: 1 1 0;
+  min-width: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
 }
 
-footer {
+/* Silueta de lo esperado en español, detrás de la barra observada */
+.barra-grupo .fondo-esperado {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  background: color-mix(in oklab, var(--borde) 75%, transparent);
+  border-radius: 3px 3px 0 0;
+}
+
+.barra {
+  position: relative;
+  background: var(--activo);
+  border-radius: 3px 3px 0 0;
+  min-height: 2px;
+}
+
+.eje-letras { display: flex; gap: 4px; margin-top: 8px; }
+
+.eje-letras span {
+  flex: 1 1 0;
+  min-width: 20px;
   text-align: center;
-  padding: 15px;
-  background: #1f3a5f;
-  color: #fff;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--tenue);
+}
+
+.histograma.compacto { height: 148px; gap: 3px; }
+.histograma.compacto .barra-grupo { min-width: 0; }
+.eje-letras.compacto { gap: 3px; }
+.eje-letras.compacto span { min-width: 0; font-size: 0.625rem; }
+
+.leyenda { margin-top: 20px; font-size: 0.9375rem; color: var(--tenue); max-width: var(--medida); }
+
+/* ---------- Resultado ---------- */
+
+.resultado-cabecera { display: flex; flex-wrap: wrap; gap: 44px; margin-bottom: 28px; }
+
+.dato .rotulo { font-size: 0.8125rem; color: var(--tenue); margin-bottom: 6px; }
+
+.dato .contenido {
+  font-family: var(--display);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--activo);
+}
+
+/* Bloque largo: fondo oscuro y texto claro. Un panel saturado a página
+   completa se vuelve ilegible pasadas unas líneas. */
+.texto-recuperado {
+  font-family: var(--mono);
+  font-size: 0.9375rem;
+  line-height: 2.1;
+  letter-spacing: 0.04em;
+  word-break: break-all;
+  color: var(--texto);
+  background: color-mix(in oklab, var(--activo) 12%, var(--hondo));
+  border: 1px solid color-mix(in oklab, var(--activo) 45%, transparent);
+  padding: 26px;
+  border-radius: 8px;
+  margin: 0 0 36px;
+}
+
+.salida-mono {
+  font-family: var(--mono);
+  font-size: 0.9375rem;
+  line-height: 2;
+  letter-spacing: 0.04em;
+  word-break: break-all;
+  background: var(--hondo);
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  padding: 18px;
+  min-height: 3.4em;
+  color: var(--texto);
+}
+
+/* ---------- Evidencia ---------- */
+
+details { border-top: 1px solid var(--borde); padding: 16px 0; }
+
+summary { cursor: pointer; font-size: 0.9375rem; font-weight: 500; list-style: none; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; display: inline-block; width: 22px; color: var(--activo); font-family: var(--mono); }
+details[open] summary::before { content: "−"; }
+
+details .cuerpo { padding: 18px 0 6px; overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+
+th, td { text-align: left; padding: 10px 16px 10px 0; border-bottom: 1px solid var(--borde); }
+th { font-weight: 500; color: var(--tenue); font-size: 0.8125rem; }
+td { color: var(--tenue); }
+td.num, th.num { font-family: var(--mono); text-align: right; padding-right: 28px; }
+
+tr.destacada td {
+  color: var(--texto);
+  background: color-mix(in oklab, var(--activo) 20%, transparent);
+  border-bottom-color: color-mix(in oklab, var(--activo) 40%, transparent);
+}
+
+.recorte { font-family: var(--mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 32ch; }
+
+.pie {
+  border-top: 1px solid var(--borde);
+  padding-top: 24px;
+  font-size: 0.875rem;
+  color: var(--tenue);
+  max-width: var(--medida);
+}
+
+.oculto { display: none; }
+
+@media (max-width: 900px) {
+  .portada { grid-template-columns: 1fr; gap: 40px; }
+  .diagnostico { grid-template-columns: 1fr; gap: 28px; }
+  .marco { padding: 0 20px 90px; }
+  .referencia { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
 }
