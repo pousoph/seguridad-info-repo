@@ -428,3 +428,6 @@ tr.destacada td {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
+
+/* Imagen añadida sin tratamiento: solo evita que desborde el ancho de la página. */
+.imagen-taller { max-width: 100%; height: auto; display: block; margin: 0 0 40px; }
