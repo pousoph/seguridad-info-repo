@@ -1,6 +1,7 @@
-// Prueba del paso 5: seis intentos fallidos seguidos contra un servidor en
-// marcha. Los cinco primeros deben responder 401 y el sexto 429 con
-// Retry-After. Se repite el sexto para comprobar que el bloqueo persiste.
+// Prueba del bloqueo: siete intentos fallidos seguidos contra un servidor
+// en marcha. Los cinco primeros deben responder 401 y del sexto en adelante
+// 429 con Retry-After. Al final consulta la bitácora intentos_login y
+// muestra las filas que dejó la prueba.
 //
 // Uso:  node scripts/probarBloqueo.js [usuario] [url]
 //       usuario por defecto: "atacante" (inexistente: solo actúa la capa IP)
@@ -9,6 +10,11 @@
 //
 // Nota: el bloqueo por IP vive en memoria; para repetir la prueba hay que
 // reiniciar el servidor o esperar 15 minutos.
+
+require('dotenv').config({ quiet: true });
+
+const { pool } = require('../src/config/db');
+const intentoRepo = require('../src/repositories/intentoRepo');
 
 const username = process.argv[2] || 'atacante';
 const base = (process.argv[3] || process.env.BASE_URL || 'http://localhost:3000').replace(/\/$/, '');
@@ -59,7 +65,22 @@ async function main() {
   console.log(fallos === 0
     ? '\nCorrecto: 5 x 401 y después 429 con Retry-After.'
     : `\n${fallos} respuesta(s) distintas de lo esperado.`);
+
+  await mostrarBitacora();
   process.exit(fallos === 0 ? 0 : 1);
+}
+
+// Evidencia: las filas que la prueba dejó en intentos_login.
+async function mostrarBitacora() {
+  const filas = await intentoRepo.listarRecientes(7, username);
+  await pool.end();
+
+  console.log(`\nBitácora intentos_login (últimos ${filas.length} de "${username}"):\n`);
+  console.log('  hora      usuario    ip          resultado  motivo');
+  for (const f of filas.reverse()) {
+    const hora = new Date(f.ocurrido_en).toLocaleTimeString('es-CO', { hour12: false });
+    console.log(`  ${hora}  ${f.username_intentado.padEnd(9)}  ${f.ip_origen.padEnd(10)}  ${(f.exitoso ? 'éxito' : 'fallo').padEnd(9)}  ${f.motivo ?? ''}`);
+  }
 }
 
 main().catch((err) => {

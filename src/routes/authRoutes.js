@@ -5,6 +5,7 @@ const authService = require('../services/authService');
 const { requiereSesion } = require('../middleware/requiereSesion');
 const { verificarCsrf, rotarCsrf } = require('../middleware/csrf');
 const fuerzaBruta = require('../middleware/proteccionFuerzaBruta');
+const intentoRepo = require('../repositories/intentoRepo');
 
 const router = express.Router();
 
@@ -25,6 +26,22 @@ router.get('/login', (req, res) => {
   renderLogin(res);
 });
 
+// Bitácora (regla 6.10): se anota TODO intento, con su resultado y motivo.
+// Nunca recibe la contraseña. Si la base falla al escribir, se registra en
+// el log del servidor y el login sigue: la auditoría no tumba la autenticación.
+async function anotarIntento(req, username, exitoso, motivo = null) {
+  try {
+    await intentoRepo.registrar(username, req.ip, exitoso, motivo);
+  } catch (err) {
+    console.error('[bitacora] No se pudo registrar el intento:', err.message);
+  }
+}
+
+// Nombre de usuario tal como lo escribió el cliente, recortado para la bitácora.
+function usernameEnviado(req) {
+  return typeof req.body?.username === 'string' ? req.body.username.trim().slice(0, 50) : '';
+}
+
 // Respuesta de bloqueo. Es la MISMA para la capa por IP y la capa por
 // cuenta: 429, Retry-After y el mismo texto, sin revelar si la cuenta existe.
 function responderBloqueo(res, segundos, username) {
@@ -37,13 +54,16 @@ function responderBloqueo(res, segundos, username) {
 router.post(
   '/api/login',
   verificarCsrf,
-  fuerzaBruta.proteccionFuerzaBruta,
+  fuerzaBruta.proteccionFuerzaBruta({
+    alBloquear: (req) => anotarIntento(req, usernameEnviado(req), false, 'ip_bloqueada'),
+  }),
   body('username').isString().trim().isLength({ min: 1, max: 50 }),
   body('password').isString().isLength({ min: 1, max: 200 }),
   async (req, res, next) => {
-    const username = typeof req.body.username === 'string' ? req.body.username.trim() : '';
+    const username = usernameEnviado(req);
 
     if (!validationResult(req).isEmpty()) {
+      await anotarIntento(req, username, false, 'datos_invalidos');
       return renderLogin(res, { status: 400, error: 'Usuario y contraseña son obligatorios.', username });
     }
 
@@ -55,6 +75,7 @@ router.post(
         // sabiendo que falló. Al quinto, registrarFallo fija el cooldown y
         // el middleware rechazará el sexto con 429.
         fuerzaBruta.registrarFallo(req.ip);
+        await anotarIntento(req, username, false, resultado.motivo);
 
         if (resultado.motivo === 'cuenta_bloqueada') {
           return responderBloqueo(res, resultado.segundosRestantes, username);
@@ -65,6 +86,7 @@ router.post(
 
       // Login correcto: esta IP vuelve a empezar de cero.
       fuerzaBruta.limpiar(req.ip);
+      await anotarIntento(req, username, true);
 
       // Sesión nueva al autenticar: la anterior (anónima) podía estar fijada
       // por un atacante. Solo después se guardan los datos del usuario.

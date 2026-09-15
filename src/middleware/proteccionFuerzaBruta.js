@@ -41,17 +41,25 @@ function segundosDeBloqueo(ip, ahora = Date.now()) {
 
 // Middleware: solo comprueba. Si la IP está en cooldown responde 429 con
 // Retry-After y no deja pasar la petición al controlador.
-function proteccionFuerzaBruta(req, res, next) {
-  const segundos = segundosDeBloqueo(req.ip);
-  if (segundos === 0) return next();
+//
+// Se construye con una opción: alBloquear(req, segundos) se invoca antes
+// de responder, para que quien lo monta (el controlador) anote el intento
+// en la bitácora. Este módulo no toca la base: solo avisa.
+function proteccionFuerzaBruta({ alBloquear } = {}) {
+  return async (req, res, next) => {
+    const segundos = segundosDeBloqueo(req.ip);
+    if (segundos === 0) return next();
 
-  res.set('Retry-After', String(segundos));
-  res.status(429).renderVista('login', {
-    titulo: 'Iniciar sesión',
-    activa: '/login',
-    error: mensajeBloqueo(segundos),
-    username: '',
-  });
+    if (alBloquear) await alBloquear(req, segundos);
+
+    res.set('Retry-After', String(segundos));
+    res.status(429).renderVista('login', {
+      titulo: 'Iniciar sesión',
+      activa: '/login',
+      error: mensajeBloqueo(segundos),
+      username: '',
+    });
+  };
 }
 
 // Lo llama el controlador cuando las credenciales NO fueron válidas.
