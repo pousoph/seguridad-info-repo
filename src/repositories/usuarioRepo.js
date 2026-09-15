@@ -54,4 +54,17 @@ async function reiniciarIntentos(id) {
   );
 }
 
-module.exports = { buscarPorUsername, registrarFallo, reiniciarIntentos };
+// Alta de usuario. Recibe el hash ya calculado: este módulo no conoce bcrypt.
+// Si el username existe, PostgreSQL lanza el error 23505 (unique_violation)
+// y se deja subir tal cual para que el servicio lo traduzca.
+async function crear(username, passwordHash, rolId) {
+  const { rows } = await pool.query(
+    `INSERT INTO usuarios (username, password_hash, rol_id)
+     VALUES ($1, $2, $3)
+  RETURNING id, username, rol_id`,
+    [username, passwordHash, rolId]
+  );
+  return rows[0];
+}
+
+module.exports = { buscarPorUsername, registrarFallo, reiniciarIntentos, crear };

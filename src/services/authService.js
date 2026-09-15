@@ -66,8 +66,24 @@ async function verificarCredenciales(username, password) {
   return { ok: true, usuario: datos };
 }
 
+// Alta de usuario: hashea con costo 10 y guarda la cadena completa.
+// Devuelve { ok: true, usuario } o { ok: false, motivo: 'username_duplicado' }.
+async function registrarUsuario(username, password, rolId) {
+  const passwordHash = await hashear(password);
+  try {
+    const usuario = await usuarioRepo.crear(username, passwordHash, rolId);
+    return { ok: true, usuario };
+  } catch (err) {
+    if (err.code === '23505') {
+      return { ok: false, motivo: 'username_duplicado' };
+    }
+    throw err;
+  }
+}
+
 module.exports = {
   hashear,
+  registrarUsuario,
   verificar,
   verificarCredenciales,
   MENSAJE_GENERICO,

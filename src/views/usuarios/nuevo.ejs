@@ -1,0 +1,51 @@
+<section class="portada">
+  <h1>Nuevo usuario</h1>
+  <p class="entrada-texto">
+    La contraseña se guarda como hash BCrypt con factor de costo 10; nunca en
+    claro. Comunícasela a la persona por un canal seguro.
+  </p>
+</section>
+
+<section class="bloque">
+  <form class="formulario" method="post" action="/usuarios" autocomplete="off">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+    <% if (error) { %>
+    <p class="aviso" role="alert"><%= error %></p>
+    <% } %>
+    <% if (exito) { %>
+    <p class="exito" role="status"><%= exito %></p>
+    <% } %>
+
+    <div class="campo">
+      <label for="username">Nombre de usuario</label>
+      <input type="text" id="username" name="username"
+             autocomplete="off" autocapitalize="none" spellcheck="false"
+             minlength="<%= limites.USERNAME_MIN %>" maxlength="<%= limites.USERNAME_MAX %>"
+             pattern="[a-zA-Z0-9._\-]+" required value="<%= valores.username %>">
+      <span class="ayuda">Entre <%= limites.USERNAME_MIN %> y <%= limites.USERNAME_MAX %> caracteres: letras, números, punto, guion o guion bajo.</span>
+    </div>
+
+    <div class="campo">
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" name="password"
+             autocomplete="new-password" minlength="<%= limites.PASSWORD_MIN %>" required>
+      <span class="ayuda">Mínimo <%= limites.PASSWORD_MIN %> caracteres.</span>
+    </div>
+
+    <div class="campo">
+      <label for="rol_id">Rol</label>
+      <select id="rol_id" name="rol_id" required>
+        <option value="">Elige un rol</option>
+        <% for (const rol of roles) { %>
+        <option value="<%= rol.id %>"<% if (String(rol.id) === String(valores.rol_id)) { %> selected<% } %>><%= rol.nombre %></option>
+        <% } %>
+      </select>
+    </div>
+
+    <div class="fila">
+      <button type="submit">Crear usuario</button>
+      <a class="enlace-suave" href="/panel">Volver al panel</a>
+    </div>
+  </form>
+</section>
