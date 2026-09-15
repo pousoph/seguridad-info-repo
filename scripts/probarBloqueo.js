@@ -15,31 +15,14 @@ require('dotenv').config({ quiet: true });
 
 const { pool } = require('../src/config/db');
 const intentoRepo = require('../src/repositories/intentoRepo');
+const { baseUrl, sesionAnonima, extraerAviso } = require('./comun');
 
 const username = process.argv[2] || 'atacante';
-const base = (process.argv[3] || process.env.BASE_URL || 'http://localhost:3000').replace(/\/$/, '');
-
-// Cookie de sesión y token CSRF: sin ellos el POST devuelve 403.
-function extraerCookie(res) {
-  const set = res.headers.get('set-cookie') || '';
-  const m = set.match(/(?:^|,\s*)(sid=[^;]+)/);
-  return m ? m[1] : '';
-}
-
-function extraerAviso(html) {
-  const m = html.match(/role="alert">([^<]*)</);
-  return m ? m[1] : '';
-}
+const base = baseUrl(process.argv[3]);
 
 async function main() {
-  const inicial = await fetch(`${base}/login`);
-  const cookie = extraerCookie(inicial);
-  const html = await inicial.text();
-  const token = (html.match(/name="_csrf" value="([^"]+)"/) || [])[1];
-
-  if (!cookie || !token) {
-    throw new Error(`No se pudo obtener cookie y token CSRF de ${base}/login (¿está el servidor en marcha?)`);
-  }
+  // Cookie de sesión y token CSRF: sin ellos el POST devuelve 403.
+  const { cookie, token } = await sesionAnonima(base);
 
   console.log(`Servidor: ${base}   usuario: ${username}\n`);
   console.log('  #  código  Retry-After  mensaje');
