@@ -1,0 +1,57 @@
+<section class="portada">
+  <div>
+    <h1>Construir<br>el mensaje</h1>
+    <p class="entrada-texto">
+      Cifra un texto con César, Afín o Vigenère.
+    </p>
+  </div>
+</section>
+
+<section class="bloque">
+  <h2>Clave</h2>
+  <div class="fila">
+    <div class="campo-medio">
+      <label for="tipo-cifrado">Cifrado</label>
+      <select id="tipo-cifrado">
+        <option value="cesar">César</option>
+        <option value="afin">Afín</option>
+        <option value="vigenere">Vigenère</option>
+      </select>
+    </div>
+
+    <div class="campo-corto" id="campo-b">
+      <label for="clave-b">Desplazamiento b</label>
+      <input type="number" id="clave-b" value="5" min="0" max="26">
+    </div>
+
+    <div class="campo-corto oculto" id="campo-a">
+      <label for="clave-a">Multiplicador a</label>
+      <select id="clave-a"></select>
+    </div>
+
+    <div class="campo-medio oculto" id="campo-palabra">
+      <label for="clave-palabra">Palabra clave</label>
+      <input type="text" id="clave-palabra" value="NUBE" spellcheck="false">
+    </div>
+  </div>
+  <p class="estado-entrada" id="estado-clave"></p>
+</section>
+
+<section class="bloque">
+  <h2>Texto</h2>
+  <label for="texto-claro">Texto en claro</label>
+  <textarea id="texto-claro" spellcheck="false" placeholder="Escribe o pega el texto original."></textarea>
+  <p class="estado-entrada" id="estado-claro"></p>
+
+  <div class="fila">
+    <button id="cifrar">Cifrar</button>
+    <button class="secundario" id="copiar">Copiar resultado</button>
+  </div>
+
+  <div style="margin-top:28px;">
+    <label for="texto-cifrado">Resultado</label>
+    <div class="salida-mono" id="texto-cifrado"></div>
+  </div>
+</section>
+
+<img class="imagen-taller" src="/img/taller.jpg" alt="">

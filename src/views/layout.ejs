@@ -37,5 +37,11 @@
   </p>
 
 </div>
+
+<%# Scripts de la vista. Los de las herramientas se sirven por rutas
+    protegidas con el mismo guardián que la página. %>
+<% for (const src of scripts) { %>
+<script src="<%= src %>"></script>
+<% } %>
 </body>
 </html>
