@@ -4,6 +4,7 @@ const { body, validationResult } = require('express-validator');
 const authService = require('../services/authService');
 const { requiereSesion } = require('../middleware/requiereSesion');
 const { verificarCsrf, rotarCsrf } = require('../middleware/csrf');
+const fuerzaBruta = require('../middleware/proteccionFuerzaBruta');
 
 const router = express.Router();
 
@@ -24,10 +25,19 @@ router.get('/login', (req, res) => {
   renderLogin(res);
 });
 
+// Respuesta de bloqueo. Es la MISMA para la capa por IP y la capa por
+// cuenta: 429, Retry-After y el mismo texto, sin revelar si la cuenta existe.
+function responderBloqueo(res, segundos, username) {
+  res.set('Retry-After', String(segundos));
+  renderLogin(res, { status: 429, error: fuerzaBruta.mensajeBloqueo(segundos), username });
+}
+
 // POST /api/login: autenticación. Todo se decide aquí, en el servidor.
+// Orden: CSRF -> bloqueo por IP -> validación -> bloqueo por cuenta y bcrypt.
 router.post(
   '/api/login',
   verificarCsrf,
+  fuerzaBruta.proteccionFuerzaBruta,
   body('username').isString().trim().isLength({ min: 1, max: 50 }),
   body('password').isString().isLength({ min: 1, max: 200 }),
   async (req, res, next) => {
@@ -41,9 +51,20 @@ router.post(
       const resultado = await authService.verificarCredenciales(username, req.body.password);
 
       if (!resultado.ok) {
+        // El middleware no pudo contar este intento: se cuenta aquí, ya
+        // sabiendo que falló. Al quinto, registrarFallo fija el cooldown y
+        // el middleware rechazará el sexto con 429.
+        fuerzaBruta.registrarFallo(req.ip);
+
+        if (resultado.motivo === 'cuenta_bloqueada') {
+          return responderBloqueo(res, resultado.segundosRestantes, username);
+        }
         // Mismo mensaje para usuario inexistente y contraseña incorrecta.
         return renderLogin(res, { status: 401, error: resultado.mensaje, username });
       }
+
+      // Login correcto: esta IP vuelve a empezar de cero.
+      fuerzaBruta.limpiar(req.ip);
 
       // Sesión nueva al autenticar: la anterior (anónima) podía estar fijada
       // por un atacante. Solo después se guardan los datos del usuario.
