@@ -54,12 +54,9 @@ const ENLACES_PUBLICOS = [{ href: '/login', texto: 'Iniciar sesión' }];
 const ENLACES_SESION = [
   { href: '/panel', texto: 'Panel' },
   { href: '/herramientas/cifrar', texto: 'Cifrar' },
-];
-const ENLACES_ADMIN = [
-  ...ENLACES_SESION,
   { href: '/herramientas/analizar', texto: 'Analizar' },
-  { href: '/usuarios/nuevo', texto: 'Nuevo usuario' },
 ];
+const ENLACES_ADMIN = [...ENLACES_SESION, { href: '/usuarios/nuevo', texto: 'Nuevo usuario' }];
 
 function enlacesPara(usuario) {
   if (!usuario) return ENLACES_PUBLICOS;

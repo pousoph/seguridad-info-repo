@@ -5,8 +5,7 @@
     <% if (esAdministrador) { %>
     Puedes usar las dos herramientas del taller y dar de alta usuarios nuevos.
     <% } else { %>
-    Puedes usar la herramienta de cifrado; el criptoanálisis está reservado
-    al rol Administrador.
+    Puedes usar las dos herramientas del taller.
     <% } %>
   </p>
 </section>
@@ -23,12 +22,12 @@
       <p>César, Afín y Vigenère sobre el alfabeto español de 27 letras.</p>
       <span class="ir">Abrir la herramienta</span>
     </a>
-    <% if (esAdministrador) { %>
     <a class="acceso-herramienta" href="/herramientas/analizar">
       <h3>Analizar</h3>
       <p>Índice de coincidencia, frecuencias y ataque automático a un criptograma.</p>
       <span class="ir">Abrir la herramienta</span>
     </a>
+    <% if (esAdministrador) { %>
     <a class="acceso-herramienta" href="/usuarios/nuevo">
       <h3>Nuevo usuario</h3>
       <p>Crea una cuenta con su rol. La contraseña se guarda como hash BCrypt.</p>
