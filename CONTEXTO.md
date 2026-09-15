@@ -114,8 +114,10 @@ intentos_login
   ocurrido_en        TIMESTAMPTZ NOT NULL DEFAULT now()
 ```
 
-Usuarios sembrados para pruebas: `admin` / `Admin2026*` (Administrador) y
-`sophy` / `Sophy2026*` (Usuario).
+Usuarios sembrados para pruebas: `admin` (Administrador) y `sophy` (Usuario).
+Sus contraseñas no están en el repositorio: se guardan en el gestor de
+contraseñas. Para cambiarlas, `node scripts/generarHash.js '<clave>'` y
+actualizar el hash en la base y en `db/init.sql`.
 
 ---
 

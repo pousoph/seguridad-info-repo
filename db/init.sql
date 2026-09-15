@@ -79,17 +79,16 @@ INSERT INTO roles (nombre) VALUES
     ('Administrador'),
     ('Usuario');
 
--- Hashes BCrypt reales, factor de costo 10.
---   admin / Admin2026*
---   sophy / Sophy2026*
--- Son credenciales de prueba para el laboratorio: en un entorno real
--- el hash lo genera la aplicación en el registro, nunca un script.
+-- Hashes BCrypt reales, factor de costo 10, generados con
+-- scripts/generarHash.js. Las contraseñas en claro NO van en el repo:
+-- se guardan en un gestor de contraseñas. En un entorno real el hash lo
+-- genera la aplicación en el registro, nunca un script.
 INSERT INTO usuarios (username, password_hash, rol_id) VALUES
     ('admin',
-     '$2b$10$U1dxbZlWNGu6gvt2HnEOqekATJobwP4Em32Zn0SRCuaqW3K/PcLKm',
+     '$2b$10$Tyk7yzP3xKCwIUW7ykYEKuwCK6HAlBYysFU3XNkSu/oAR4H39Z.4O',
      (SELECT id FROM roles WHERE nombre = 'Administrador')),
     ('sophy',
-     '$2b$10$p0zrR9uUX0gy5aSHGpKGN.aaAdNv4RoFbeyDVk8le2XSs815DDtSG',
+     '$2b$10$LB3SQe1sVVU0ZVSTCXvLIuezCDH67086zgkQqiNvjOH3JskuD12ce',
      (SELECT id FROM roles WHERE nombre = 'Usuario'));
 
 -- =====================================================================
