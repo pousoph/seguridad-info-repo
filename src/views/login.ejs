@@ -1,39 +1,84 @@
-<section class="portada">
+<section class="acceso">
   <div>
-    <h1>Iniciar<br>sesión</h1>
+    <h1>Iniciar sesión</h1>
     <p class="entrada-texto">
-      Las herramientas del taller están detrás de una cuenta. La contraseña se
-      verifica en el servidor contra su hash BCrypt; el navegador nunca la compara.
+      Entra con tu cuenta del taller. La contraseña se comprueba en el
+      servidor contra su hash BCrypt; el navegador nunca la ve en claro.
     </p>
+
+    <form class="formulario" method="post" action="/api/login">
+      <%# Token CSRF: generado en el servidor y guardado en la sesión;
+          aquí solo viaja como campo oculto y se valida en el POST. %>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+      <% if (error) { %>
+      <p class="aviso" role="alert"><%= error %></p>
+      <% } %>
+
+      <div class="campo">
+        <label for="username">Usuario</label>
+        <input type="text" id="username" name="username"
+               autocomplete="username" autocapitalize="none" spellcheck="false"
+               maxlength="50" required value="<%= username %>">
+      </div>
+
+      <div class="campo">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password"
+               autocomplete="current-password" required>
+      </div>
+
+      <div class="fila">
+        <button type="submit">Entrar</button>
+        <a class="enlace-suave" href="/">Volver al inicio</a>
+      </div>
+    </form>
   </div>
-</section>
 
-<section class="bloque">
-  <form class="formulario" method="post" action="/api/login">
-    <%# Token CSRF: generado en el servidor y guardado en la sesión;
-        aquí solo viaja como campo oculto y se valida en el POST. %>
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-    <% if (error) { %>
-    <p class="aviso" role="alert"><%= error %></p>
-    <% } %>
-
-    <div class="campo">
-      <label for="username">Usuario</label>
-      <input type="text" id="username" name="username"
-             autocomplete="username" autocapitalize="none" spellcheck="false"
-             maxlength="50" required value="<%= username %>">
-    </div>
-
-    <div class="campo">
-      <label for="password">Contraseña</label>
-      <input type="password" id="password" name="password"
-             autocomplete="current-password" required>
-    </div>
-
-    <div class="fila">
-      <button type="submit">Entrar</button>
-      <a class="enlace-suave" href="/">Volver a la portada</a>
-    </div>
-  </form>
+  <%# Ilustración inline: toma el color de --acento y no carga nada externo. %>
+  <div class="ilustracion" aria-hidden="true">
+    <svg viewBox="0 0 440 340" xmlns="http://www.w3.org/2000/svg" role="img">
+      <defs>
+        <clipPath id="pantalla"><rect x="196" y="96" width="176" height="112" rx="8"/></clipPath>
+      </defs>
+      <!-- fondo -->
+      <circle cx="250" cy="170" r="140" fill="var(--acento-borde)" opacity="0.45"/>
+      <!-- planta -->
+      <path d="M392 226c-14-30-10-58 8-72 6 24 4 50-8 72z" fill="var(--acento)" opacity="0.7"/>
+      <path d="M396 226c-2-32 10-56 32-64-2 26-12 50-32 64z" fill="var(--acento)"/>
+      <rect x="380" y="224" width="34" height="30" rx="4" fill="var(--acento-fuerte)"/>
+      <!-- silla -->
+      <rect x="86" y="128" width="96" height="120" rx="20" fill="var(--acento-borde)"/>
+      <rect x="126" y="246" width="16" height="30" fill="var(--acento-borde)"/>
+      <rect x="98" y="272" width="72" height="8" rx="4" fill="var(--acento-borde)"/>
+      <!-- persona -->
+      <rect x="104" y="166" width="80" height="92" rx="26" fill="var(--acento)"/>
+      <circle cx="144" cy="132" r="26" fill="var(--acento-fuerte)"/>
+      <path d="M118 128c4-24 26-32 46-24 8 4 10 12 8 20-10-8-26-10-38-4-6 3-12 6-16 8z" fill="var(--tinta)"/>
+      <path d="M176 196c22 6 42 14 62 22" stroke="var(--acento)" stroke-width="18" stroke-linecap="round" fill="none"/>
+      <!-- escritorio -->
+      <rect x="150" y="252" width="264" height="10" rx="5" fill="var(--tinta)"/>
+      <rect x="166" y="262" width="10" height="46" fill="var(--tinta)"/>
+      <rect x="388" y="262" width="10" height="46" fill="var(--tinta)"/>
+      <!-- teclado -->
+      <rect x="222" y="236" width="88" height="10" rx="4" fill="var(--acento-fuerte)"/>
+      <!-- monitor -->
+      <rect x="270" y="214" width="28" height="24" fill="var(--tinta)"/>
+      <rect x="246" y="236" width="76" height="8" rx="4" fill="var(--tinta)"/>
+      <rect x="190" y="90" width="188" height="124" rx="12" fill="var(--tinta)"/>
+      <rect x="196" y="96" width="176" height="112" rx="8" fill="#FFFFFF"/>
+      <g clip-path="url(#pantalla)">
+        <rect x="196" y="96" width="176" height="18" fill="var(--acento-suave)"/>
+        <circle cx="208" cy="105" r="3" fill="var(--acento)"/>
+        <circle cx="218" cy="105" r="3" fill="var(--acento-borde)"/>
+        <circle cx="228" cy="105" r="3" fill="var(--acento-borde)"/>
+        <!-- candado -->
+        <rect x="266" y="150" width="36" height="28" rx="6" fill="var(--acento)"/>
+        <path d="M273 150v-9a11 11 0 0 1 22 0v9" stroke="var(--acento)" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <circle cx="284" cy="163" r="3.5" fill="#FFFFFF"/>
+        <rect x="222" y="190" width="124" height="6" rx="3" fill="var(--acento-suave)"/>
+        <rect x="240" y="190" width="60" height="6" rx="3" fill="var(--acento)"/>
+      </g>
+    </svg>
+  </div>
 </section>

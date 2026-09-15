@@ -55,7 +55,11 @@ const ENLACES_SESION = [
   { href: '/panel', texto: 'Panel' },
   { href: '/herramientas/cifrar', texto: 'Cifrar' },
 ];
-const ENLACES_ADMIN = [...ENLACES_SESION, { href: '/herramientas/analizar', texto: 'Analizar' }];
+const ENLACES_ADMIN = [
+  ...ENLACES_SESION,
+  { href: '/herramientas/analizar', texto: 'Analizar' },
+  { href: '/usuarios/nuevo', texto: 'Nuevo usuario' },
+];
 
 function enlacesPara(usuario) {
   if (!usuario) return ENLACES_PUBLICOS;
@@ -76,6 +80,7 @@ app.use((req, res, next) => {
 // Rutas
 app.use(require('./routes/authRoutes'));
 app.use(require('./routes/herramientasRoutes'));
+app.use(require('./routes/usuariosRoutes'));
 
 // 404
 app.use((req, res) => {

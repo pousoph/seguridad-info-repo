@@ -13,43 +13,46 @@
 <div class="marco">
 
   <header class="encabezado">
-    <div class="sello">
+    <a class="sello" href="/">
       <span class="punto"></span>
-      Seguridad de la Información · 2026-II
-    </div>
-    <nav class="navegacion">
+      Seguridad de la Información <span class="curso">2026-II</span>
+    </a>
+    <nav class="navegacion" aria-label="Principal">
       <a href="/login">Iniciar sesión</a>
     </nav>
   </header>
 
-  <section class="portada">
+  <section class="portada doble">
     <div>
-      <h1>Cifrado clásico<br>y acceso seguro</h1>
+      <h1>Cifrado clásico con acceso seguro</h1>
       <p class="entrada-texto">
-        Taller de Seguridad de la Información. Las herramientas de cifrado y
-        criptoanálisis del taller anterior quedan ahora detrás de un módulo de
-        inicio de sesión: <strong>contraseñas con BCrypt</strong>, sesión en el
-        servidor, control por rol y bloqueo ante intentos repetidos.
+        Las herramientas de cifrado y criptoanálisis del taller quedan detrás
+        de un inicio de sesión: <strong>contraseñas con BCrypt</strong>, sesión
+        en el servidor, control por rol y bloqueo tras cinco intentos fallidos.
       </p>
+      <div class="acciones">
+        <a class="boton" href="/login">Iniciar sesión</a>
+      </div>
     </div>
+
+    <ul class="lista-herramientas">
+      <li>
+        <h3>Cifrar</h3>
+        <span class="quien">Cualquier cuenta</span>
+        <p>César, Afín y Vigenère sobre el alfabeto español de 27 letras.</p>
+      </li>
+      <li>
+        <h3>Analizar</h3>
+        <span class="quien admin">Solo Administrador</span>
+        <p>Índice de coincidencia, frecuencias y ataque automático a un criptograma.</p>
+      </li>
+    </ul>
   </section>
 
-  <section class="bloque">
-    <h2>Herramientas</h2>
-    <p class="guia">
-      Se necesita una cuenta del taller. Los cifrados están disponibles para
-      cualquier usuario; el criptoanálisis, solo para el rol Administrador.
-    </p>
-    <div class="fila">
-      <a class="boton" href="/login">Iniciar sesión</a>
-    </div>
-  </section>
-
-  <img class="imagen-taller" src="/img/taller.jpg" alt="">
-
-  <p class="pie">
-    Elaborado por: Sophy Valentina Guiza Valencia
-  </p>
+  <footer class="pie">
+    <span>Elaborado por Sophy Valentina Guiza Valencia</span>
+    <span>Universidad El Bosque · Seguridad de la Información 2026-II</span>
+  </footer>
 
 </div>
 </body>

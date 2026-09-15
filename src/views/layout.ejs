@@ -15,16 +15,17 @@
   <header class="encabezado">
     <a class="sello" href="/">
       <span class="punto"></span>
-      Seguridad de la Información · 2026-II
+      Seguridad de la Información <span class="curso">2026-II</span>
     </a>
-    <nav class="navegacion">
+    <nav class="navegacion" aria-label="Principal">
       <% for (const enlace of enlaces) { %>
       <a href="<%= enlace.href %>"<% if (enlace.href === activa) { %> aria-current="page"<% } %>><%= enlace.texto %></a>
       <% } %>
       <% if (usuario) { %>
+      <span class="separador" aria-hidden="true"></span>
       <form method="post" action="/logout">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-        <button type="submit" class="enlace-nav">Salir</button>
+        <button type="submit" class="enlace-nav">Cerrar sesión</button>
       </form>
       <% } %>
     </nav>
@@ -32,9 +33,10 @@
 
   <%- cuerpo %>
 
-  <p class="pie">
-    Elaborado por: Sophy Valentina Guiza Valencia
-  </p>
+  <footer class="pie">
+    <span>Elaborado por Sophy Valentina Guiza Valencia</span>
+    <span>Universidad El Bosque · Seguridad de la Información 2026-II</span>
+  </footer>
 
 </div>
 

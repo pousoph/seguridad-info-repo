@@ -1,34 +1,50 @@
 /*
- * estilo.css
- * Taller de Cifrado Clásico - Seguridad de la Información 2026-II
+ * style.css
+ * Seguridad de la Información 2026-II
  *
- * El color no decora: identifica el cifrado. --activo cambia según lo
- * que diagnostique el análisis y se propaga por toda la página.
- * La monoespaciada se reserva para el contenido criptográfico; la prosa
- * va en sans, que es lo que se lee sin cansarse.
+ * Modo claro con acento morado. El color se define una sola vez aquí:
+ * --acento y sus variantes gobiernan botones, enlaces, foco y la
+ * ilustración del login. En las herramientas, --activo cambia según el
+ * cifrado diagnosticado (César, Afín, Vigenère) y arrastra consigo barras,
+ * cifras y botones, igual que en el taller anterior.
+ *
+ * Tipografía: Bricolage Grotesque para títulos, IBM Plex Sans para leer,
+ * IBM Plex Mono para lo criptográfico (entradas, resultados, cifras).
  */
 
- :root {
-  --fondo:   #16142C;
-  --panel:   #1E1B3B;
-  --hondo:   #100E22;
-  --borde:   #322D5C;
-  --texto:   #F2F0FC;
-  --tenue:   #B3ADD8;
-  --alerta:  #FF7A93;
+:root {
+  --fondo:       #F7F6FB;
+  --superficie:  #FFFFFF;
+  --tinta:       #1B1830;
+  --tenue:       #5E5A78;
+  --linea:       #DDDAEA;
+  --linea-suave: #ECEAF4;
 
-  --cesar:    #FF7FBB;
-  --afin:     #6FE8CD;
-  --vigenere: #FFD05E;
-  --neutro:   #A79AFF;
+  --acento:        #5B3DD6;
+  --acento-fuerte: #472DB0;
+  --acento-suave:  #ECE8FB;
+  --acento-borde:  #C9BFF3;
+  --sobre-acento:  #FFFFFF;
 
-  --activo: var(--neutro);
+  --alerta:       #B3261E;
+  --alerta-suave: #FBEAE9;
+  --exito:        #1E6B4E;
+  --exito-suave:  #E4F3EC;
+
+  /* Paleta por cifrado, ajustada para leerse sobre blanco (AA). */
+  --cesar:    #B8236B;
+  --afin:     #0F7A6A;
+  --vigenere: #9A5B00;
+
+  --activo: var(--acento);
 
   --display: "Bricolage Grotesque", "IBM Plex Sans", system-ui, sans-serif;
   --sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  --medida: 64ch;
+  --medida: 62ch;
+  --radio: 10px;
+  --radio-panel: 16px;
 }
 
 body[data-cifrado="cesar"]    { --activo: var(--cesar); }
@@ -42,247 +58,340 @@ html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
   background: var(--fondo);
-  color: var(--texto);
+  color: var(--tinta);
   font-family: var(--sans);
   font-size: 1rem;
-  line-height: 1.65;
-  /* Halo muy leve del color activo: se nota el cambio de diagnóstico
-     sin que el fondo compita con el texto. */
-  background-image: radial-gradient(1000px 560px at 84% -10%,
-                    color-mix(in oklab, var(--activo) 11%, transparent), transparent 72%);
-  background-attachment: fixed;
-  transition: background-image .5s ease;
+  line-height: 1.6;
+  /* La franja superior es la única marca de color fija del sitio;
+     toma el color del cifrado activo en las herramientas. */
+  border-top: 4px solid var(--activo);
   -webkit-font-smoothing: antialiased;
 }
 
-::selection { background: var(--activo); color: var(--hondo); }
+::selection { background: var(--acento-suave); color: var(--tinta); }
+
+a { color: var(--acento); }
+a:hover { color: var(--acento-fuerte); }
+
+:focus-visible { outline: 3px solid var(--acento); outline-offset: 2px; }
 
 /* ---------- Estructura ---------- */
 
-.marco { max-width: 1120px; margin: 0 auto; padding: 0 28px 120px; }
+.marco {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 28px 40px;
+  min-height: calc(100vh - 4px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* El pie se queda abajo aunque la página sea corta (login, error). */
+.marco > .pie { margin-top: auto; }
+.marco > section:last-of-type { margin-bottom: 56px; }
 
 .encabezado {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  padding: 28px 0;
+  gap: 16px 24px;
+  padding: 26px 0 40px;
 }
 
 .sello {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
-  font-size: 0.8125rem;
-  color: var(--tenue);
+  gap: 10px;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  color: var(--tinta);
+  text-decoration: none;
 }
 
 .sello .punto {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
   background: var(--activo);
-  box-shadow: 0 0 14px color-mix(in oklab, var(--activo) 70%, transparent);
-  transition: background .4s ease, box-shadow .4s ease;
+  transform: rotate(45deg);
   flex: 0 0 auto;
 }
 
-.navegacion { display: flex; gap: 6px; }
+.sello .curso { color: var(--tenue); font-family: var(--sans); font-weight: 400; }
 
-.navegacion a {
+.navegacion { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.navegacion form { display: contents; }
+
+.navegacion a,
+.navegacion .enlace-nav {
+  display: inline-block;
   color: var(--tenue);
+  background: transparent;
   text-decoration: none;
-  font-size: 0.875rem;
-  padding: 8px 18px;
-  border: 1px solid var(--borde);
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.4;
+  padding: 8px 16px;
+  border: 1px solid transparent;
   border-radius: 999px;
+  cursor: pointer;
 }
 
-.navegacion a:hover { color: var(--texto); border-color: var(--activo); }
+.navegacion a:hover,
+.navegacion .enlace-nav:hover { color: var(--acento-fuerte); background: var(--acento-suave); }
 
 .navegacion a[aria-current="page"] {
-  color: var(--hondo);
-  background: var(--activo);
-  border-color: var(--activo);
-  font-weight: 600;
+  color: var(--sobre-acento);
+  background: var(--acento);
 }
 
-/* ---------- Portada ---------- */
+.navegacion .separador { width: 1px; height: 22px; background: var(--linea); margin: 0 6px; }
 
-.portada {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 56px;
-  align-items: center;
-  padding: 32px 0 76px;
-}
+/* ---------- Titulares ---------- */
+
+h1, h2, h3 { font-family: var(--display); color: var(--tinta); margin: 0; }
+
+.portada { padding: 24px 0 56px; }
 
 .portada h1 {
-  font-family: var(--display);
   font-weight: 800;
-  font-size: clamp(2.5rem, 6.4vw, 4.5rem);
-  line-height: 1;
-  letter-spacing: -0.03em;
-  margin: 0 0 22px;
+  font-size: clamp(2.5rem, 6vw, 4.25rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  max-width: 14ch;
+  margin-bottom: 22px;
 }
 
 .portada .entrada-texto {
   max-width: var(--medida);
   color: var(--tenue);
   font-size: 1.0625rem;
-  line-height: 1.7;
+  line-height: 1.65;
   margin: 0;
 }
 
-.portada .entrada-texto strong { color: var(--texto); font-weight: 500; }
+.portada .entrada-texto strong { color: var(--tinta); font-weight: 500; }
 
-/* ---------- Portada: tabla de frecuencias de referencia ---------- */
+.portada .acciones { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
 
-.referencia { display: flex; flex-direction: column; gap: 12px; width: 420px; max-width: 100%; }
-
-.referencia-pie {
-  font-size: 0.8125rem;
-  color: var(--tenue);
-  line-height: 1.6;
-  margin: 0;
+/* Portada con dos columnas (inicio): texto + lista de herramientas. */
+.portada.doble {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: center;
 }
 
 /* ---------- Secciones ---------- */
 
-.bloque { margin-bottom: 68px; }
+.bloque { margin-bottom: 56px; }
 
 .bloque > h2 {
-  font-family: var(--display);
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 600;
   letter-spacing: -0.02em;
-  margin: 0 0 10px;
+  margin-bottom: 8px;
 }
 
 .bloque > .guia {
   max-width: var(--medida);
   color: var(--tenue);
-  font-size: 1rem;
-  margin: 0 0 26px;
+  margin: 0 0 22px;
 }
 
-/* ---------- Controles ---------- */
+/* Lista de herramientas: un ítem por fila, separados por línea. */
+.lista-herramientas { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--linea); }
+
+.lista-herramientas li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 24px;
+  align-items: baseline;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--linea);
+}
+
+.lista-herramientas h3 { font-size: 1.125rem; font-weight: 600; letter-spacing: -0.01em; }
+.lista-herramientas p { grid-column: 1; margin: 0; color: var(--tenue); font-size: 0.95rem; max-width: 52ch; }
+.lista-herramientas .quien { grid-row: 1; grid-column: 2; font-size: 0.85rem; color: var(--tenue); white-space: nowrap; }
+.lista-herramientas .quien.admin { color: var(--acento); font-weight: 500; }
+
+/* Accesos del panel: enlaces grandes, uno por herramienta. */
+.accesos { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+
+.acceso-herramienta {
+  display: block;
+  padding: 22px 24px 24px;
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-panel);
+  color: var(--tinta);
+  text-decoration: none;
+}
+
+.acceso-herramienta:hover { border-color: var(--acento); color: var(--tinta); }
+.acceso-herramienta:hover h3 { color: var(--acento); }
+
+.acceso-herramienta h3 { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.015em; margin-bottom: 6px; }
+.acceso-herramienta p { margin: 0; color: var(--tenue); font-size: 0.95rem; }
+.acceso-herramienta .ir { display: block; margin-top: 16px; color: var(--acento); font-weight: 500; font-size: 0.95rem; }
+
+/* ---------- Formularios ---------- */
 
 label {
   display: block;
-  font-size: 0.8125rem;
-  color: var(--tenue);
-  margin-bottom: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--tinta);
+  margin-bottom: 6px;
 }
+
+.ayuda { display: block; margin-top: 6px; font-size: 0.85rem; color: var(--tenue); }
 
 textarea, input[type="text"], input[type="password"], input[type="number"], select {
   width: 100%;
-  background: var(--hondo);
-  color: var(--texto);
-  border: 1px solid var(--borde);
-  border-radius: 8px;
-  padding: 14px 16px;
+  background: var(--superficie);
+  color: var(--tinta);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  padding: 12px 14px;
   font-family: var(--mono);
-  font-size: 0.9375rem;
-  line-height: 1.8;
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 select { font-family: var(--sans); }
 
-textarea { min-height: 160px; resize: vertical; letter-spacing: 0.02em; }
+textarea { min-height: 150px; resize: vertical; letter-spacing: 0.02em; }
 
 textarea:focus, input:focus, select:focus {
   outline: none;
   border-color: var(--activo);
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--activo) 20%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--activo) 22%, transparent);
 }
 
-button:focus-visible { outline: 2px solid var(--activo); outline-offset: 3px; }
+.formulario { max-width: 440px; }
+.formulario .campo { margin-bottom: 20px; }
+.formulario .aviso, .formulario .exito { margin: 0 0 20px; }
+.formulario .fila { align-items: center; margin-top: 4px; }
 
-.fila { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px; margin-top: 20px; }
+.fila { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px; margin-top: 18px; }
 .fila > * { flex: 0 0 auto; }
 .campo-corto { width: 150px; }
 .campo-medio { width: 230px; }
 
-button {
+/* Botones: el mismo aspecto para <button> y para enlaces con .boton. */
+button, .boton {
+  display: inline-block;
   font-family: var(--sans);
-  font-size: 0.9375rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  color: var(--hondo);
+  line-height: 1.4;
+  color: var(--sobre-acento);
   background: var(--activo);
   border: 1px solid var(--activo);
-  border-radius: 999px;
-  padding: 12px 26px;
+  border-radius: var(--radio);
+  padding: 11px 22px;
+  text-decoration: none;
   cursor: pointer;
-  transition: filter .18s ease;
 }
 
-button:hover { filter: brightness(1.1); }
+button:hover, .boton:hover { filter: brightness(0.92); color: var(--sobre-acento); }
 
-button.secundario {
-  color: var(--tenue);
-  background: transparent;
-  border-color: var(--borde);
+button.secundario, .boton.secundario {
+  color: var(--tinta);
+  background: var(--superficie);
+  border-color: var(--linea);
 }
 
-button.secundario:hover { color: var(--texto); border-color: var(--activo); filter: none; }
+button.secundario:hover, .boton.secundario:hover { border-color: var(--activo); color: var(--activo); filter: none; }
 
-.estado-entrada {
-  margin-top: 10px;
-  font-size: 0.8125rem;
-  color: var(--tenue);
-  min-height: 1.4em;
+.enlace-suave { color: var(--tenue); font-size: 0.95rem; text-decoration: none; }
+.enlace-suave:hover { color: var(--acento); text-decoration: underline; }
+
+.estado-entrada { margin-top: 8px; font-size: 0.85rem; color: var(--tenue); min-height: 1.4em; }
+
+/* ---------- Avisos ---------- */
+
+.aviso, .exito {
+  font-size: 0.95rem;
+  border-radius: var(--radio);
+  padding: 12px 14px;
+  border: 1px solid transparent;
 }
 
-/* ---------- Diagnóstico ---------- */
+.aviso { color: var(--alerta); background: var(--alerta-suave); border-color: color-mix(in oklab, var(--alerta) 25%, transparent); }
+.exito { color: var(--exito); background: var(--exito-suave); border-color: color-mix(in oklab, var(--exito) 25%, transparent); }
+
+/* ---------- Login: formulario + ilustración ---------- */
+
+.acceso {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 56px;
+  align-items: center;
+  padding: 8px 0 32px;
+}
+
+.acceso h1 {
+  font-weight: 800;
+  font-size: clamp(2.25rem, 5vw, 3.25rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin-bottom: 14px;
+}
+
+.acceso .entrada-texto { color: var(--tenue); max-width: 44ch; margin: 0 0 30px; }
+
+.ilustracion {
+  background: var(--acento-suave);
+  border-radius: 24px;
+  padding: 36px;
+  aspect-ratio: 5 / 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ilustracion svg { width: 100%; height: auto; max-width: 440px; display: block; }
+
+/* ---------- Diagnóstico (herramienta de análisis) ---------- */
 
 .diagnostico {
   display: grid;
-  grid-template-columns: minmax(200px, 260px) 1fr;
-  gap: 40px;
-  border: 1px solid var(--borde);
-  border-radius: 8px;
-  padding: 32px;
-  background: var(--panel);
+  grid-template-columns: minmax(200px, 250px) 1fr;
+  gap: 36px;
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-panel);
+  padding: 30px;
+  background: var(--superficie);
 }
 
 .diagnostico.revelado { animation: destello .55s ease-out; }
 
 @keyframes destello {
-  from { background: color-mix(in oklab, var(--activo) 22%, var(--panel)); }
-  to   { background: var(--panel); }
+  from { background: color-mix(in oklab, var(--activo) 14%, var(--superficie)); }
+  to   { background: var(--superficie); }
 }
 
 .medidor .valor {
   font-family: var(--display);
-  font-size: 3.75rem;
+  font-size: 3.5rem;
   font-weight: 800;
   line-height: 0.95;
   letter-spacing: -0.035em;
   color: var(--activo);
 }
 
-.medidor .rotulo { font-size: 0.8125rem; color: var(--tenue); margin-top: 14px; line-height: 1.75; }
+.medidor .rotulo { font-size: 0.85rem; color: var(--tenue); margin-top: 12px; line-height: 1.7; }
 
-.veredicto h3 {
-  font-family: var(--display);
-  margin: 0 0 14px;
-  font-size: 1.375rem;
-  font-weight: 600;
-  letter-spacing: -0.015em;
-}
-
-.veredicto p { margin: 0 0 14px; max-width: var(--medida); font-size: 1rem; color: var(--tenue); }
+.veredicto h3 { margin: 0 0 12px; font-size: 1.3rem; font-weight: 600; letter-spacing: -0.015em; }
+.veredicto p { margin: 0 0 12px; max-width: var(--medida); color: var(--tenue); }
 .veredicto p:last-child { margin-bottom: 0; }
-
-.aviso {
-  color: var(--alerta);
-  font-size: 0.9375rem;
-  background: color-mix(in oklab, var(--alerta) 12%, transparent);
-  border-radius: 6px;
-  padding: 12px 16px;
-}
 
 /* ---------- Histograma ---------- */
 
@@ -291,7 +400,7 @@ button.secundario:hover { color: var(--texto); border-color: var(--activo); filt
   align-items: flex-end;
   gap: 4px;
   height: 210px;
-  border-bottom: 1px solid var(--borde);
+  border-bottom: 1px solid var(--linea);
   overflow-x: auto;
 }
 
@@ -309,16 +418,11 @@ button.secundario:hover { color: var(--texto); border-color: var(--activo); filt
 .barra-grupo .fondo-esperado {
   position: absolute;
   left: 0; right: 0; bottom: 0;
-  background: color-mix(in oklab, var(--borde) 75%, transparent);
+  background: var(--linea-suave);
   border-radius: 3px 3px 0 0;
 }
 
-.barra {
-  position: relative;
-  background: var(--activo);
-  border-radius: 3px 3px 0 0;
-  min-height: 2px;
-}
+.barra { position: relative; background: var(--activo); border-radius: 3px 3px 0 0; min-height: 2px; }
 
 .eje-letras { display: flex; gap: 4px; margin-top: 8px; }
 
@@ -331,148 +435,112 @@ button.secundario:hover { color: var(--texto); border-color: var(--activo); filt
   color: var(--tenue);
 }
 
-.histograma.compacto { height: 148px; gap: 3px; }
+.histograma.compacto { height: 140px; gap: 3px; }
 .histograma.compacto .barra-grupo { min-width: 0; }
 .eje-letras.compacto { gap: 3px; }
 .eje-letras.compacto span { min-width: 0; font-size: 0.625rem; }
 
-.leyenda { margin-top: 20px; font-size: 0.9375rem; color: var(--tenue); max-width: var(--medida); }
+.referencia { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 440px; }
+.referencia-pie { font-size: 0.85rem; color: var(--tenue); line-height: 1.6; margin: 0; }
+
+.leyenda { margin-top: 18px; font-size: 0.95rem; color: var(--tenue); max-width: var(--medida); }
 
 /* ---------- Resultado ---------- */
 
-.resultado-cabecera { display: flex; flex-wrap: wrap; gap: 44px; margin-bottom: 28px; }
+.resultado-cabecera { display: flex; flex-wrap: wrap; gap: 40px; margin-bottom: 24px; }
 
-.dato .rotulo { font-size: 0.8125rem; color: var(--tenue); margin-bottom: 6px; }
+.dato .rotulo { font-size: 0.85rem; color: var(--tenue); margin-bottom: 4px; }
 
 .dato .contenido {
   font-family: var(--display);
-  font-size: 1.75rem;
+  font-size: 1.6rem;
   font-weight: 600;
   letter-spacing: -0.015em;
   color: var(--activo);
 }
 
-/* Bloque largo: fondo oscuro y texto claro. Un panel saturado a página
-   completa se vuelve ilegible pasadas unas líneas. */
-.texto-recuperado {
+.texto-recuperado, .salida-mono {
   font-family: var(--mono);
-  font-size: 0.9375rem;
-  line-height: 2.1;
-  letter-spacing: 0.04em;
-  word-break: break-all;
-  color: var(--texto);
-  background: color-mix(in oklab, var(--activo) 12%, var(--hondo));
-  border: 1px solid color-mix(in oklab, var(--activo) 45%, transparent);
-  padding: 26px;
-  border-radius: 8px;
-  margin: 0 0 36px;
-}
-
-.salida-mono {
-  font-family: var(--mono);
-  font-size: 0.9375rem;
+  font-size: 0.95rem;
   line-height: 2;
   letter-spacing: 0.04em;
   word-break: break-all;
-  background: var(--hondo);
-  border: 1px solid var(--borde);
-  border-radius: 8px;
-  padding: 18px;
+  color: var(--tinta);
+  border-radius: var(--radio);
+}
+
+.texto-recuperado {
+  background: color-mix(in oklab, var(--activo) 8%, var(--superficie));
+  border: 1px solid color-mix(in oklab, var(--activo) 35%, transparent);
+  padding: 22px 24px;
+  margin: 0 0 32px;
+}
+
+.salida-mono {
+  background: var(--superficie);
+  border: 1px solid var(--linea);
+  padding: 16px 18px;
   min-height: 3.4em;
-  color: var(--texto);
 }
 
 /* ---------- Evidencia ---------- */
 
-details { border-top: 1px solid var(--borde); padding: 16px 0; }
+details { border-top: 1px solid var(--linea); padding: 14px 0; }
 
-summary { cursor: pointer; font-size: 0.9375rem; font-weight: 500; list-style: none; }
+summary { cursor: pointer; font-size: 0.95rem; font-weight: 500; list-style: none; }
 summary::-webkit-details-marker { display: none; }
 summary::before { content: "+"; display: inline-block; width: 22px; color: var(--activo); font-family: var(--mono); }
 details[open] summary::before { content: "−"; }
 
-details .cuerpo { padding: 18px 0 6px; overflow-x: auto; }
+details .cuerpo { padding: 16px 0 6px; overflow-x: auto; }
 
 table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
 
-th, td { text-align: left; padding: 10px 16px 10px 0; border-bottom: 1px solid var(--borde); }
+th, td { text-align: left; padding: 9px 16px 9px 0; border-bottom: 1px solid var(--linea-suave); }
 th { font-weight: 500; color: var(--tenue); font-size: 0.8125rem; }
 td { color: var(--tenue); }
 td.num, th.num { font-family: var(--mono); text-align: right; padding-right: 28px; }
 
 tr.destacada td {
-  color: var(--texto);
-  background: color-mix(in oklab, var(--activo) 20%, transparent);
-  border-bottom-color: color-mix(in oklab, var(--activo) 40%, transparent);
+  color: var(--tinta);
+  background: color-mix(in oklab, var(--activo) 10%, transparent);
+  border-bottom-color: color-mix(in oklab, var(--activo) 30%, transparent);
 }
 
 .recorte { font-family: var(--mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 32ch; }
 
+/* ---------- Error ---------- */
+
+.error-pagina { padding: 24px 0 48px; max-width: var(--medida); }
+.error-pagina .codigo { font-family: var(--display); font-weight: 800; font-size: clamp(4rem, 12vw, 7rem); line-height: 0.9; letter-spacing: -0.04em; color: var(--acento); margin-bottom: 18px; }
+.error-pagina h1 { font-size: 1.75rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 10px; }
+.error-pagina p { color: var(--tenue); margin: 0 0 26px; }
+
+/* ---------- Pie ---------- */
+
 .pie {
-  border-top: 1px solid var(--borde);
-  padding-top: 24px;
+  border-top: 1px solid var(--linea);
+  padding-top: 20px;
   font-size: 0.875rem;
   color: var(--tenue);
-  max-width: var(--medida);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  justify-content: space-between;
 }
 
 .oculto { display: none; }
 
-@media (max-width: 900px) {
-  .portada { grid-template-columns: 1fr; gap: 40px; }
-  .diagnostico { grid-template-columns: 1fr; gap: 28px; }
-  .marco { padding: 0 20px 90px; }
-  .referencia { width: 100%; }
+@media (max-width: 860px) {
+  .portada.doble, .acceso { grid-template-columns: 1fr; gap: 32px; }
+  .ilustracion { display: none; }
+  .diagnostico { grid-template-columns: 1fr; gap: 24px; }
+  .marco { padding: 0 20px 56px; }
+  .encabezado { padding-bottom: 28px; }
+  .lista-herramientas li { grid-template-columns: 1fr; }
+  .lista-herramientas .quien { grid-row: auto; grid-column: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
-
-/* Imagen añadida sin tratamiento: solo evita que desborde el ancho de la página. */
-.imagen-taller { max-width: 100%; height: auto; display: block; margin: 0 0 40px; }
-/* Enlace con aspecto de botón: la portada solo enlaza a /login, sin JS. */
-a.boton {
-  display: inline-block;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--hondo);
-  background: var(--activo);
-  border: 1px solid var(--activo);
-  border-radius: 999px;
-  padding: 12px 26px;
-  text-decoration: none;
-  transition: filter .18s ease;
-}
-
-a.boton:hover { filter: brightness(1.1); }
-a.boton:focus-visible { outline: 2px solid var(--activo); outline-offset: 3px; }
-
-/* Botón de "Salir" en la navegación: es un POST (cierra sesión), pero se ve
-   como el resto de enlaces de la barra. */
-.navegacion form { display: contents; }
-.navegacion .enlace-nav {
-  color: var(--tenue);
-  background: transparent;
-  border: 1px solid var(--borde);
-  border-radius: 999px;
-  font-size: 0.875rem;
-  font-weight: 400;
-  padding: 8px 18px;
-  line-height: 1.65;
-}
-.navegacion .enlace-nav:hover { color: var(--texto); border-color: var(--activo); filter: none; }
-
-/* ---------- Formulario de acceso ---------- */
-
-/* El sello enlaza a la portada sin cambiar de aspecto. */
-a.sello { text-decoration: none; }
-a.sello:hover { color: var(--texto); }
-
-.formulario { max-width: 420px; }
-.formulario .campo { margin-bottom: 22px; }
-.formulario .aviso { margin: 0 0 22px; }
-.formulario .fila { align-items: center; margin-top: 8px; }
-
-.enlace-suave { color: var(--tenue); font-size: 0.9375rem; text-decoration: none; }
-.enlace-suave:hover { color: var(--texto); text-decoration: underline; }
