@@ -1,0 +1,39 @@
+<section class="portada">
+  <div>
+    <h1>Iniciar<br>sesión</h1>
+    <p class="entrada-texto">
+      Las herramientas del taller están detrás de una cuenta. La contraseña se
+      verifica en el servidor contra su hash BCrypt; el navegador nunca la compara.
+    </p>
+  </div>
+</section>
+
+<section class="bloque">
+  <form class="formulario" method="post" action="/api/login">
+    <%# Punto de enganche CSRF (paso 4): el token se genera en el servidor y
+        se guarda en sesión; aquí solo viaja como campo oculto. %>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+    <% if (error) { %>
+    <p class="aviso" role="alert"><%= error %></p>
+    <% } %>
+
+    <div class="campo">
+      <label for="username">Usuario</label>
+      <input type="text" id="username" name="username"
+             autocomplete="username" autocapitalize="none" spellcheck="false"
+             maxlength="50" required value="<%= username %>">
+    </div>
+
+    <div class="campo">
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" name="password"
+             autocomplete="current-password" required>
+    </div>
+
+    <div class="fila">
+      <button type="submit">Entrar</button>
+      <a class="enlace-suave" href="/">Volver a la portada</a>
+    </div>
+  </form>
+</section>

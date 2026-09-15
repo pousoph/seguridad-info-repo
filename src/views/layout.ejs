@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title><%= titulo %> · Seguridad de la Información</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/style.css">
+</head>
+<body>
+<div class="marco">
+
+  <header class="encabezado">
+    <a class="sello" href="/">
+      <span class="punto"></span>
+      Seguridad de la Información · 2026-II
+    </a>
+    <nav class="navegacion">
+      <% for (const enlace of enlaces) { %>
+      <a href="<%= enlace.href %>"<% if (enlace.href === activa) { %> aria-current="page"<% } %>><%= enlace.texto %></a>
+      <% } %>
+    </nav>
+  </header>
+
+  <%- cuerpo %>
+
+  <p class="pie">
+    Elaborado por: Sophy Valentina Guiza Valencia
+  </p>
+
+</div>
+</body>
+</html>

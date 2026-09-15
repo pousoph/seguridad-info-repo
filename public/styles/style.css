@@ -176,7 +176,7 @@ label {
   margin-bottom: 8px;
 }
 
-textarea, input[type="text"], input[type="number"], select {
+textarea, input[type="text"], input[type="password"], input[type="number"], select {
   width: 100%;
   background: var(--hondo);
   color: var(--texto);
@@ -447,3 +447,17 @@ a.boton {
 
 a.boton:hover { filter: brightness(1.1); }
 a.boton:focus-visible { outline: 2px solid var(--activo); outline-offset: 3px; }
+
+/* ---------- Formulario de acceso ---------- */
+
+/* El sello enlaza a la portada sin cambiar de aspecto. */
+a.sello { text-decoration: none; }
+a.sello:hover { color: var(--texto); }
+
+.formulario { max-width: 420px; }
+.formulario .campo { margin-bottom: 22px; }
+.formulario .aviso { margin: 0 0 22px; }
+.formulario .fila { align-items: center; margin-top: 8px; }
+
+.enlace-suave { color: var(--tenue); font-size: 0.9375rem; text-decoration: none; }
+.enlace-suave:hover { color: var(--texto); text-decoration: underline; }
