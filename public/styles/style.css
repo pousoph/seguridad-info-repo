@@ -431,3 +431,19 @@ tr.destacada td {
 
 /* Imagen añadida sin tratamiento: solo evita que desborde el ancho de la página. */
 .imagen-taller { max-width: 100%; height: auto; display: block; margin: 0 0 40px; }
+/* Enlace con aspecto de botón: la portada solo enlaza a /login, sin JS. */
+a.boton {
+  display: inline-block;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--hondo);
+  background: var(--activo);
+  border: 1px solid var(--activo);
+  border-radius: 999px;
+  padding: 12px 26px;
+  text-decoration: none;
+  transition: filter .18s ease;
+}
+
+a.boton:hover { filter: brightness(1.1); }
+a.boton:focus-visible { outline: 2px solid var(--activo); outline-offset: 3px; }

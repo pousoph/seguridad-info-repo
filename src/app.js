@@ -15,7 +15,6 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-        'img-src': ["'self'", 'data:', 'https://i.pinimg.com'],
         ...(cookieSecure ? {} : { 'upgrade-insecure-requests': null }),
       },
     },
