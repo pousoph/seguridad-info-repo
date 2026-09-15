@@ -10,8 +10,8 @@
 
 <section class="bloque">
   <form class="formulario" method="post" action="/api/login">
-    <%# Punto de enganche CSRF (paso 4): el token se genera en el servidor y
-        se guarda en sesión; aquí solo viaja como campo oculto. %>
+    <%# Token CSRF: generado en el servidor y guardado en la sesión;
+        aquí solo viaja como campo oculto y se valida en el POST. %>
     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
     <% if (error) { %>

@@ -448,6 +448,21 @@ a.boton {
 a.boton:hover { filter: brightness(1.1); }
 a.boton:focus-visible { outline: 2px solid var(--activo); outline-offset: 3px; }
 
+/* Botón de "Salir" en la navegación: es un POST (cierra sesión), pero se ve
+   como el resto de enlaces de la barra. */
+.navegacion form { display: contents; }
+.navegacion .enlace-nav {
+  color: var(--tenue);
+  background: transparent;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 400;
+  padding: 8px 18px;
+  line-height: 1.65;
+}
+.navegacion .enlace-nav:hover { color: var(--texto); border-color: var(--activo); filter: none; }
+
 /* ---------- Formulario de acceso ---------- */
 
 /* El sello enlaza a la portada sin cambiar de aspecto. */

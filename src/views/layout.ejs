@@ -21,6 +21,12 @@
       <% for (const enlace of enlaces) { %>
       <a href="<%= enlace.href %>"<% if (enlace.href === activa) { %> aria-current="page"<% } %>><%= enlace.texto %></a>
       <% } %>
+      <% if (usuario) { %>
+      <form method="post" action="/logout">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button type="submit" class="enlace-nav">Salir</button>
+      </form>
+      <% } %>
     </nav>
   </header>
 

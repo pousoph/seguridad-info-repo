@@ -1,0 +1,40 @@
+<section class="portada">
+  <div>
+    <h1>Hola,<br><%= usuario.username %></h1>
+    <p class="entrada-texto">
+      Sesión iniciada con el rol <strong><%= usuario.rol %></strong>.
+      <% if (esAdministrador) { %>
+      Tienes acceso a todas las herramientas del taller, incluido el criptoanálisis.
+      <% } else { %>
+      Tienes acceso a las herramientas de cifrado; el criptoanálisis está
+      reservado al rol Administrador.
+      <% } %>
+    </p>
+  </div>
+</section>
+
+<section class="bloque">
+  <h2>Herramientas</h2>
+  <p class="guia">
+    Cada herramienta comprueba la sesión y el rol en el servidor antes de
+    entregar la página y sus scripts.
+  </p>
+  <div class="fila">
+    <a class="boton" href="/herramientas/cifrar">Cifrar</a>
+    <% if (esAdministrador) { %>
+    <a class="boton" href="/herramientas/analizar">Analizar</a>
+    <% } %>
+  </div>
+</section>
+
+<section class="bloque">
+  <h2>Sesión</h2>
+  <p class="guia">
+    La sesión caduca tras 30 minutos sin actividad. Cerrarla la destruye en el
+    servidor y borra la cookie del navegador.
+  </p>
+  <form method="post" action="/logout" class="fila">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <button type="submit" class="secundario">Cerrar sesión</button>
+  </form>
+</section>
