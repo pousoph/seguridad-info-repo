@@ -36,11 +36,14 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use(require('./config/session'));
 app.use(require('./middleware/csrf').inyectarCsrf);
 
-// Datos de sesión disponibles en todas las vistas (nunca desde el cliente).
+// Valores por defecto para todas las vistas:
+//  - usuario: datos de la sesión del servidor (nunca desde el cliente);
+//  - scripts: lista vacía; solo las herramientas la sobreescriben.
 app.use((req, res, next) => {
   res.locals.usuario = req.session.userId
     ? { id: req.session.userId, username: req.session.username, rol: req.session.rol }
     : null;
+  res.locals.scripts = [];
   next();
 });
 
@@ -61,7 +64,7 @@ function enlacesPara(usuario) {
 
 app.use((req, res, next) => {
   res.renderVista = (vista, datos = {}) => {
-    const locales = { activa: req.path, enlaces: enlacesPara(res.locals.usuario), scripts: [], ...datos };
+    const locales = { activa: req.path, enlaces: enlacesPara(res.locals.usuario), ...datos };
     res.render(vista, locales, (err, html) => {
       if (err) return next(err);
       res.render('layout', { ...locales, cuerpo: html });
