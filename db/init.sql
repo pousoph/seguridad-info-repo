@@ -89,6 +89,9 @@ INSERT INTO usuarios (username, password_hash, rol_id) VALUES
      (SELECT id FROM roles WHERE nombre = 'Administrador')),
     ('sophy',
      '$2b$10$LB3SQe1sVVU0ZVSTCXvLIuezCDH67086zgkQqiNvjOH3JskuD12ce',
+     (SELECT id FROM roles WHERE nombre = 'Usuario')),
+    ('sophgomitas',
+     '$2b$10$jFCpot7116dfrRr6.0BAOu05nQB1vWFQPdOOObnyusWO2MeMrIyxe',
      (SELECT id FROM roles WHERE nombre = 'Usuario'));
 
 -- =====================================================================
