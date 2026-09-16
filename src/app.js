@@ -44,28 +44,16 @@ app.use((req, res, next) => {
     ? { id: req.session.userId, username: req.session.username, rol: req.session.rol }
     : null;
   res.locals.scripts = [];
+  res.locals.sinShell = false; // true solo en páginas a pantalla completa (login)
   next();
 });
 
 // EJS no tiene herencia de plantillas: res.renderVista renderiza la vista y
 // mete el HTML resultante en layout.ejs como `cuerpo`. Toda página pasa por
 // aquí, así que la cabecera, la navegación y el pie viven en un solo sitio.
-const ENLACES_PUBLICOS = [{ href: '/login', texto: 'Iniciar sesión' }];
-const ENLACES_SESION = [
-  { href: '/panel', texto: 'Panel' },
-  { href: '/herramientas/cifrar', texto: 'Cifrar' },
-  { href: '/herramientas/analizar', texto: 'Analizar' },
-];
-const ENLACES_ADMIN = [...ENLACES_SESION, { href: '/usuarios/nuevo', texto: 'Nuevo usuario' }];
-
-function enlacesPara(usuario) {
-  if (!usuario) return ENLACES_PUBLICOS;
-  return usuario.rol === 'Administrador' ? ENLACES_ADMIN : ENLACES_SESION;
-}
-
 app.use((req, res, next) => {
   res.renderVista = (vista, datos = {}) => {
-    const locales = { activa: req.path, enlaces: enlacesPara(res.locals.usuario), ...datos };
+    const locales = { activa: req.path, ...datos };
     res.render(vista, locales, (err, html) => {
       if (err) return next(err);
       res.render('layout', { ...locales, cuerpo: html });

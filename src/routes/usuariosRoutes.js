@@ -19,8 +19,9 @@ const soloAdmin = [requiereSesion, requiereRol('Administrador')];
 async function renderFormulario(res, { status = 200, error = null, exito = null, valores = {} } = {}) {
   const roles = await rolRepo.listar();
   res.status(status).renderVista('usuarios/nuevo', {
-    titulo: 'Nuevo usuario',
+    titulo: 'Crear usuario',
     activa: '/usuarios/nuevo',
+    scripts: ['/js/login.js'],   // mostrar/ocultar contraseña
     roles,
     error,
     exito,

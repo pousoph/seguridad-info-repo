@@ -1,50 +1,81 @@
-<section class="portada">
-  <h1>Hola, <%= usuario.username %></h1>
-  <p class="entrada-texto">
-    Tu cuenta tiene el rol <strong><%= usuario.rol %></strong>.
-    <% if (esAdministrador) { %>
-    Puedes usar las dos herramientas del taller y dar de alta usuarios nuevos.
-    <% } else { %>
-    Puedes usar las dos herramientas del taller.
-    <% } %>
-  </p>
+<section class="tarjeta acento bienvenida">
+  <div>
+    <h1>Hola, <%= usuario.username %></h1>
+    <p>
+      <% if (esAdministrador) { %>
+      Tienes acceso a las dos herramientas de criptografía clásica y a la
+      administración de cuentas.
+      <% } else { %>
+      Tienes acceso a las dos herramientas de criptografía clásica del taller.
+      <% } %>
+    </p>
+  </div>
+  <svg class="marca-agua" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/></svg>
 </section>
 
-<section class="bloque">
-  <h2>Herramientas</h2>
-  <p class="guia">
-    Cada página comprueba tu sesión y tu rol en el servidor antes de entregar
-    su contenido y sus scripts.
-  </p>
-  <div class="accesos">
-    <a class="acceso-herramienta" href="/herramientas/cifrar">
+<div class="rejilla <%= esAdministrador ? 'tres' : 'dos' %>">
+  <a class="acceso-rapido" href="/herramientas/cifrar">
+    <span class="icono"><%- include('partials/icono', { nombre: 'llave' }) %></span>
+    <span>
       <h3>Cifrar</h3>
       <p>César, Afín y Vigenère sobre el alfabeto español de 27 letras.</p>
-      <span class="ir">Abrir la herramienta</span>
-    </a>
-    <a class="acceso-herramienta" href="/herramientas/analizar">
+      <span class="ir">Abrir</span>
+    </span>
+  </a>
+  <a class="acceso-rapido" href="/herramientas/analizar">
+    <span class="icono"><%- include('partials/icono', { nombre: 'grafico' }) %></span>
+    <span>
       <h3>Analizar</h3>
       <p>Índice de coincidencia, frecuencias y ataque automático a un criptograma.</p>
-      <span class="ir">Abrir la herramienta</span>
-    </a>
-    <% if (esAdministrador) { %>
-    <a class="acceso-herramienta" href="/usuarios/nuevo">
-      <h3>Nuevo usuario</h3>
-      <p>Crea una cuenta con su rol. La contraseña se guarda como hash BCrypt.</p>
-      <span class="ir">Crear una cuenta</span>
-    </a>
-    <% } %>
-  </div>
-</section>
+      <span class="ir">Abrir</span>
+    </span>
+  </a>
+  <% if (esAdministrador) { %>
+  <a class="acceso-rapido" href="/usuarios/nuevo">
+    <span class="icono"><%- include('partials/icono', { nombre: 'usuarioMas' }) %></span>
+    <span>
+      <h3>Crear usuario</h3>
+      <p>Da de alta una cuenta con su rol. La contraseña se guarda como hash BCrypt.</p>
+      <span class="ir">Abrir</span>
+    </span>
+  </a>
+  <% } %>
+</div>
 
-<section class="bloque">
-  <h2>Sesión</h2>
-  <p class="guia">
-    Caduca tras 30 minutos sin actividad. Al cerrarla se destruye en el
-    servidor y se borra la cookie del navegador.
-  </p>
-  <form method="post" action="/logout" class="fila">
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-    <button type="submit" class="secundario">Cerrar sesión</button>
-  </form>
-</section>
+<div class="rejilla dos" style="margin-top: 20px;">
+  <section class="tarjeta">
+    <h2>Tu sesión</h2>
+    <p class="guia">Lo que el servidor sabe de esta sesión. El rol se lee siempre aquí, nunca del navegador.</p>
+    <ul class="datos">
+      <li><span class="clave">Usuario</span><span class="valor"><%= usuario.username %></span></li>
+      <li><span class="clave">Rol</span><span class="valor"><%= usuario.rol %></span></li>
+      <li><span class="clave">Caducidad</span><span class="valor">30 min sin actividad</span></li>
+      <li><span class="clave">Cookie</span><span class="valor">HttpOnly · SameSite=Lax</span></li>
+    </ul>
+    <form method="post" action="/logout" class="fila">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button type="submit" class="secundario"><%- include('partials/icono', { nombre: 'salir' }) %>Cerrar sesión</button>
+    </form>
+  </section>
+
+  <section class="tarjeta">
+    <h2>Actividad reciente de tu cuenta</h2>
+    <p class="guia">Últimos intentos de inicio de sesión con tu usuario, según la bitácora del servidor.</p>
+    <% if (actividad.length === 0) { %>
+    <p class="vacio">Todavía no hay intentos registrados.</p>
+    <% } else { %>
+    <table class="actividad">
+      <thead><tr><th>Cuándo</th><th>Desde</th><th>Resultado</th></tr></thead>
+      <tbody>
+        <% for (const i of actividad) { %>
+        <tr>
+          <td><%= i.cuando %></td>
+          <td class="mono"><%= i.ip_origen %></td>
+          <td><span class="chip <%= i.exitoso ? 'ok' : 'mal' %>"><%= i.exitoso ? 'Correcto' : 'Rechazado' %></span></td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+    <% } %>
+  </section>
+</div>

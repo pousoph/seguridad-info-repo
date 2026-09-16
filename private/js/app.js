@@ -464,7 +464,9 @@ function iniciarCifrado() {
     setTimeout(function () { boton.textContent = 'Copiar resultado'; }, 2000);
   });
 
-  $('validar').addEventListener('click', function () {
+  /* La sección de validación contra los retos de la guía ya no está en la
+     página; si algún día vuelve, basta con que existan sus elementos. */
+  if ($('validar')) $('validar').addEventListener('click', function () {
     const zona = $('resultado-validacion');
     zona.textContent = '';
 

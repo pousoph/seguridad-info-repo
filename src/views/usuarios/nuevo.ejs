@@ -1,51 +1,72 @@
-<section class="portada">
-  <h1>Nuevo usuario</h1>
-  <p class="entrada-texto">
-    La contraseña se guarda como hash BCrypt con factor de costo 10; nunca en
-    claro. Comunícasela a la persona por un canal seguro.
-  </p>
-</section>
+<header class="cabecera-pagina">
+  <span class="etiqueta">Administración</span>
+  <h1>Crear usuario</h1>
+  <p>La contraseña se guarda como hash BCrypt con factor de costo 10, nunca en claro. Comunícasela a la persona por un canal seguro.</p>
+</header>
 
-<section class="bloque">
-  <form class="formulario" method="post" action="/usuarios" autocomplete="off">
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+<div class="rejilla dos">
+  <section class="tarjeta">
+    <form class="formulario" method="post" action="/usuarios" autocomplete="off">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-    <% if (error) { %>
-    <p class="aviso" role="alert"><%= error %></p>
-    <% } %>
-    <% if (exito) { %>
-    <p class="exito" role="status"><%= exito %></p>
-    <% } %>
+      <% if (error) { %>
+      <p class="aviso" role="alert"><%- include('../partials/icono', { nombre: 'alerta' }) %><span><%= error %></span></p>
+      <% } %>
+      <% if (exito) { %>
+      <p class="exito" role="status"><%- include('../partials/icono', { nombre: 'check' }) %><span><%= exito %></span></p>
+      <% } %>
 
-    <div class="campo">
-      <label for="username">Nombre de usuario</label>
-      <input type="text" id="username" name="username"
-             autocomplete="off" autocapitalize="none" spellcheck="false"
-             minlength="<%= limites.USERNAME_MIN %>" maxlength="<%= limites.USERNAME_MAX %>"
-             pattern="[a-zA-Z0-9._\-]+" required value="<%= valores.username %>">
-      <span class="ayuda">Entre <%= limites.USERNAME_MIN %> y <%= limites.USERNAME_MAX %> caracteres: letras, números, punto, guion o guion bajo.</span>
-    </div>
+      <div class="campo">
+        <label for="username">Nombre de usuario</label>
+        <input type="text" id="username" name="username"
+               autocomplete="off" autocapitalize="none" spellcheck="false"
+               minlength="<%= limites.USERNAME_MIN %>" maxlength="<%= limites.USERNAME_MAX %>"
+               pattern="[a-zA-Z0-9._\-]+" required value="<%= valores.username %>">
+        <span class="ayuda">Entre <%= limites.USERNAME_MIN %> y <%= limites.USERNAME_MAX %> caracteres: letras, números, punto, guion o guion bajo.</span>
+      </div>
 
-    <div class="campo">
-      <label for="password">Contraseña</label>
-      <input type="password" id="password" name="password"
-             autocomplete="new-password" minlength="<%= limites.PASSWORD_MIN %>" required>
-      <span class="ayuda">Mínimo <%= limites.PASSWORD_MIN %> caracteres.</span>
-    </div>
+      <div class="campo">
+        <label for="password">Contraseña</label>
+        <div class="campo-clave">
+          <input type="password" id="password" name="password"
+                 autocomplete="new-password" minlength="<%= limites.PASSWORD_MIN %>" required>
+          <button type="button" class="ver-clave" data-ver-clave="password"
+                  aria-label="Mostrar contraseña" aria-pressed="false">
+            <span data-icono="mostrar"><%- include('../partials/icono', { nombre: 'ojo' }) %></span>
+            <span data-icono="ocultar" hidden><%- include('../partials/icono', { nombre: 'ojoTachado' }) %></span>
+          </button>
+        </div>
+        <span class="ayuda">Mínimo <%= limites.PASSWORD_MIN %> caracteres.</span>
+      </div>
 
-    <div class="campo">
-      <label for="rol_id">Rol</label>
-      <select id="rol_id" name="rol_id" required>
-        <option value="">Elige un rol</option>
-        <% for (const rol of roles) { %>
-        <option value="<%= rol.id %>"<% if (String(rol.id) === String(valores.rol_id)) { %> selected<% } %>><%= rol.nombre %></option>
-        <% } %>
-      </select>
-    </div>
+      <div class="campo">
+        <label for="rol_id">Rol</label>
+        <select id="rol_id" name="rol_id" required>
+          <option value="">Elige un rol</option>
+          <% for (const rol of roles) { %>
+          <option value="<%= rol.id %>"<% if (String(rol.id) === String(valores.rol_id)) { %> selected<% } %>><%= rol.nombre %></option>
+          <% } %>
+        </select>
+      </div>
 
-    <div class="fila">
-      <button type="submit">Crear usuario</button>
-      <a class="enlace-suave" href="/panel">Volver al panel</a>
-    </div>
-  </form>
-</section>
+      <div class="fila">
+        <button type="submit"><%- include('../partials/icono', { nombre: 'usuarioMas' }) %>Crear usuario</button>
+        <a class="enlace-suave" href="/panel">Cancelar</a>
+      </div>
+    </form>
+  </section>
+
+  <section class="tarjeta">
+    <h2>Qué puede hacer cada rol</h2>
+    <ul class="datos">
+      <li><span class="clave">Usuario</span><span class="valor">Cifrar y Analizar</span></li>
+      <li><span class="clave">Administrador</span><span class="valor">Todo lo anterior y crear usuarios</span></li>
+    </ul>
+    <h2 style="margin-top: 22px;">Qué se comprueba en el servidor</h2>
+    <ul class="datos">
+      <li><span class="clave">Sesión y rol</span><span class="valor">En cada petición</span></li>
+      <li><span class="clave">Nombre duplicado</span><span class="valor">Restricción UNIQUE</span></li>
+      <li><span class="clave">Token CSRF</span><span class="valor">En el envío del formulario</span></li>
+    </ul>
+  </section>
+</div>

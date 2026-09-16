@@ -6,42 +6,94 @@
 <title><%= titulo %> · Seguridad de la Información</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/style.css">
 </head>
 <body>
-<div class="marco">
+<% const esAdmin = usuario && usuario.rol === 'Administrador'; %>
+<% if (usuario && !sinShell) { %>
+<%# ---------- Aplicación: sidebar + contenido ---------- %>
+<div class="shell" id="shell">
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
 
-  <header class="encabezado">
-    <a class="sello" href="/">
-      <span class="punto"></span>
-      Seguridad de la Información <span class="curso">2026-II</span>
+  <header class="barra-movil">
+    <a class="marca" href="/panel">
+      <span class="logo"><%- include('partials/icono', { nombre: 'candado' }) %></span>
+      Seguridad de la Información
     </a>
-    <nav class="navegacion" aria-label="Principal">
-      <% for (const enlace of enlaces) { %>
-      <a href="<%= enlace.href %>"<% if (enlace.href === activa) { %> aria-current="page"<% } %>><%= enlace.texto %></a>
-      <% } %>
-      <% if (usuario) { %>
-      <span class="separador" aria-hidden="true"></span>
-      <form method="post" action="/logout">
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-        <button type="submit" class="enlace-nav">Cerrar sesión</button>
-      </form>
-      <% } %>
-    </nav>
+    <button type="button" class="hamburguesa" id="abrir-menu" aria-controls="sidebar" aria-expanded="false" aria-label="Abrir menú">
+      <%- include('partials/icono', { nombre: 'menu' }) %>
+    </button>
   </header>
 
-  <%- cuerpo %>
+  <aside class="sidebar" id="sidebar">
+    <a class="marca" href="/panel">
+      <span class="logo"><%- include('partials/icono', { nombre: 'candado' }) %></span>
+      <span>Seguridad de la Información<small>Taller 2026-II</small></span>
+    </a>
 
+    <nav aria-label="Principal">
+      <ul>
+        <li><a class="item" href="/panel"<% if (activa === '/panel') { %> aria-current="page"<% } %>><%- include('partials/icono', { nombre: 'inicio' }) %>Inicio</a></li>
+      </ul>
+      <div>
+        <p class="seccion-titulo">Criptografía clásica</p>
+        <ul>
+          <li><a class="item" href="/herramientas/cifrar"<% if (activa === '/herramientas/cifrar') { %> aria-current="page"<% } %>><%- include('partials/icono', { nombre: 'llave' }) %>Cifrar</a></li>
+          <li><a class="item" href="/herramientas/analizar"<% if (activa === '/herramientas/analizar') { %> aria-current="page"<% } %>><%- include('partials/icono', { nombre: 'grafico' }) %>Analizar</a></li>
+        </ul>
+      </div>
+      <% if (esAdmin) { %>
+      <div>
+        <p class="seccion-titulo">Administración</p>
+        <ul>
+          <li><a class="item" href="/usuarios/nuevo"<% if (activa === '/usuarios/nuevo') { %> aria-current="page"<% } %>><%- include('partials/icono', { nombre: 'usuarioMas' }) %>Crear usuario</a></li>
+        </ul>
+      </div>
+      <% } %>
+    </nav>
+
+    <div class="sidebar-usuario">
+      <span class="avatar" aria-hidden="true"><%= usuario.username.slice(0, 1) %></span>
+      <div>
+        <div class="nombre"><%= usuario.username %></div>
+        <div class="rol"><%= usuario.rol %></div>
+      </div>
+      <form method="post" action="/logout">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button type="submit" class="salir" aria-label="Cerrar sesión" title="Cerrar sesión"><%- include('partials/icono', { nombre: 'salir' }) %></button>
+      </form>
+    </div>
+  </aside>
+  <div class="telon" id="telon"></div>
+
+  <main class="contenido-app" id="contenido">
+    <%- cuerpo %>
+  </main>
+</div>
+<script src="/js/shell.js"></script>
+<% } else if (sinShell) { %>
+<%# ---------- Página a pantalla completa (login) ---------- %>
+<%- cuerpo %>
+<% } else { %>
+<%# ---------- Sitio público ---------- %>
+<div class="publico">
+  <header class="cabecera-publica">
+    <a class="marca" href="/">
+      <span class="logo"><%- include('partials/icono', { nombre: 'candado' }) %></span>
+      Seguridad de la Información
+    </a>
+    <a class="boton" href="/login">Iniciar sesión</a>
+  </header>
+  <main>
+    <%- cuerpo %>
+  </main>
   <footer class="pie">
     <span>Elaborado por Sophy Valentina Guiza Valencia</span>
     <span>Universidad El Bosque · Seguridad de la Información 2026-II</span>
   </footer>
-
 </div>
-
-<%# Scripts de la vista. Los de las herramientas se sirven por rutas
-    protegidas con el mismo guardián que la página. %>
+<% } %>
 <% for (const src of scripts) { %>
 <script src="<%= src %>"></script>
 <% } %>

@@ -13,6 +13,8 @@ function renderLogin(res, { status = 200, error = null, username = '' } = {}) {
   res.status(status).renderVista('login', {
     titulo: 'Iniciar sesión',
     activa: '/login',
+    sinShell: true,              // pantalla completa, sin cabecera ni sidebar
+    scripts: ['/js/login.js'],   // mostrar/ocultar contraseña (solo usabilidad)
     error,
     username,
   });
@@ -116,12 +118,25 @@ router.post('/logout', requiereSesion, verificarCsrf, (req, res, next) => {
   });
 });
 
-// GET /panel: contenido según el rol guardado en la sesión.
-router.get('/panel', requiereSesion, (req, res) => {
+// GET /panel: inicio de la aplicación. Muestra la actividad reciente de la
+// propia cuenta según la bitácora; si la consulta falla, se muestra vacía.
+router.get('/panel', requiereSesion, async (req, res) => {
+  let actividad = [];
+  try {
+    const filas = await intentoRepo.listarRecientes(6, req.session.username);
+    actividad = filas.map((f) => ({
+      ...f,
+      cuando: new Date(f.ocurrido_en).toLocaleString('es-CO', { dateStyle: 'short', timeStyle: 'short', hour12: false }),
+    }));
+  } catch (err) {
+    console.error('[panel] No se pudo leer la actividad:', err.message);
+  }
+
   res.renderVista('panel', {
-    titulo: 'Panel',
+    titulo: 'Inicio',
     activa: '/panel',
     esAdministrador: req.session.rol === 'Administrador',
+    actividad,
   });
 });
 

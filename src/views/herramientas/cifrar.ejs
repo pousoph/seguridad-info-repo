@@ -1,13 +1,10 @@
-<section class="portada">
-  <div>
-    <h1>Construir el mensaje</h1>
-    <p class="entrada-texto">
-      Cifra un texto con César, Afín o Vigenère.
-    </p>
-  </div>
-</section>
+<header class="cabecera-pagina">
+  <span class="etiqueta">Criptografía clásica</span>
+  <h1>Cifrar</h1>
+  <p>Cifra un texto con César, Afín o Vigenère sobre el alfabeto español de 27 letras.</p>
+</header>
 
-<section class="bloque">
+<section class="tarjeta">
   <h2>Clave</h2>
   <div class="fila">
     <div class="campo-medio">
@@ -37,7 +34,7 @@
   <p class="estado-entrada" id="estado-clave"></p>
 </section>
 
-<section class="bloque">
+<section class="tarjeta">
   <h2>Texto</h2>
   <label for="texto-claro">Texto en claro</label>
   <textarea id="texto-claro" spellcheck="false" placeholder="Escribe o pega el texto original."></textarea>
@@ -48,7 +45,7 @@
     <button class="secundario" id="copiar">Copiar resultado</button>
   </div>
 
-  <div class="campo" style="margin-top:24px;">
+  <div class="campo" style="margin-top: 24px;">
     <label for="texto-cifrado">Resultado</label>
     <div class="salida-mono" id="texto-cifrado"></div>
   </div>

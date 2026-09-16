@@ -4,9 +4,10 @@
   <p><%= mensaje %></p>
   <div class="fila">
     <% if (usuario) { %>
-    <a class="boton" href="/panel">Ir al panel</a>
+    <a class="boton" href="/panel">Ir al inicio</a>
     <% } else { %>
-    <a class="boton" href="/">Ir al inicio</a>
+    <a class="boton" href="/">Ir a la portada</a>
+    <a class="boton secundario" href="/login">Iniciar sesión</a>
     <% } %>
   </div>
 </section>

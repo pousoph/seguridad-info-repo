@@ -6,54 +6,81 @@
 <title>Seguridad de la Información</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/style.css">
 </head>
 <body>
-<div class="marco">
-
-  <header class="encabezado">
-    <a class="sello" href="/">
-      <span class="punto"></span>
-      Seguridad de la Información <span class="curso">2026-II</span>
+<div class="publico">
+  <header class="cabecera-publica">
+    <a class="marca" href="/">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/></svg></span>
+      Seguridad de la Información
     </a>
-    <nav class="navegacion" aria-label="Principal">
-      <a href="/login">Iniciar sesión</a>
-    </nav>
+    <a class="boton" href="/login">Iniciar sesión</a>
   </header>
 
-  <section class="portada doble">
-    <div>
-      <h1>Cifrado clásico con acceso seguro</h1>
-      <p class="entrada-texto">
-        Las herramientas de cifrado y criptoanálisis del taller quedan detrás
-        de un inicio de sesión: <strong>contraseñas con BCrypt</strong>, sesión
-        en el servidor, control por rol y bloqueo tras cinco intentos fallidos.
-      </p>
-      <div class="acciones">
+  <main>
+    <section class="hero">
+      <div>
+        <h1>Criptografía clásica con acceso seguro</h1>
+        <p>
+          Cifra y analiza mensajes con César, Afín y Vigenère desde una cuenta
+          protegida: contraseñas con BCrypt, sesión en el servidor, control por
+          rol y bloqueo tras cinco intentos fallidos.
+        </p>
         <a class="boton" href="/login">Iniciar sesión</a>
       </div>
-    </div>
 
-    <ul class="lista-herramientas">
+      <div class="hero-panel">
+        <ul class="lista">
+          <li>
+            <span class="icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="14" r="4"/><path d="M11 11l8-8M15 7l2 2M18 4l2 2"/></svg></span>
+            <div>
+              <h3>Cifrar</h3>
+              <p>César, Afín y Vigenère sobre el alfabeto español de 27 letras.</p>
+            </div>
+          </li>
+          <li>
+            <span class="icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16"/><rect x="6" y="11" width="3" height="6" rx="1"/><rect x="11" y="6" width="3" height="11" rx="1"/><rect x="16" y="9" width="3" height="8" rx="1"/></svg></span>
+            <div>
+              <h3>Analizar</h3>
+              <p>Índice de coincidencia, frecuencias y ataque automático a un criptograma.</p>
+            </div>
+          </li>
+          <li>
+            <span class="icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="8" r="4"/><path d="M3 21a7 7 0 0 1 14 0"/><path d="M19 8v6M16 11h6"/></svg></span>
+            <div>
+              <h3>Cuentas por rol</h3>
+              <p>Usuario y Administrador. Solo el administrador da de alta cuentas.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <ul class="rasgos">
       <li>
-        <h3>Cifrar</h3>
-        <span class="quien">Cualquier cuenta</span>
-        <p>César, Afín y Vigenère sobre el alfabeto español de 27 letras.</p>
+        <span class="icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span>
+        <h3>Contraseñas con BCrypt</h3>
+        <p>Cada contraseña se guarda como hash con sal embebida y factor de costo 10. El servidor nunca la conoce en claro.</p>
       </li>
       <li>
-        <h3>Analizar</h3>
-        <span class="quien">Cualquier cuenta</span>
-        <p>Índice de coincidencia, frecuencias y ataque automático a un criptograma.</p>
+        <span class="icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>
+        <h3>Bloqueo ante fuerza bruta</h3>
+        <p>Cinco intentos fallidos bloquean la dirección y la cuenta durante quince minutos. Todo intento queda en la bitácora.</p>
+      </li>
+      <li>
+        <span class="icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/></svg></span>
+        <h3>Sesión en el servidor</h3>
+        <p>Cookie HttpOnly y SameSite, sesión regenerada al entrar y token CSRF en cada formulario.</p>
       </li>
     </ul>
-  </section>
+  </main>
 
   <footer class="pie">
     <span>Elaborado por Sophy Valentina Guiza Valencia</span>
     <span>Universidad El Bosque · Seguridad de la Información 2026-II</span>
   </footer>
-
 </div>
 </body>
 </html>
